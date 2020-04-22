@@ -1,0 +1,119 @@
+
+var a = 0.1;
+var b = 0.2;
+
+const memory = new Float64Array(1);
+memory[0] = a;
+
+const intarr = new Uint8Array(memory);
+console.log(intarr);
+
+01.30
+
+Number  // 整数 和 小数
+    DecimalLiteral  // 可以是1个0，
+        0
+        0.
+        .2
+        1e3
+    BinaryIntegerLiteral
+        0b111 (二进制 0b111 1 0b011 3)
+    OctalIntegerLiteral
+        0o10（八进制 8） 0o11(八进制 9)
+    HexIntegerLiteral
+        0xFF (十六进制 0x100 256 0x111 273)
+
+十进制的表示法
+分成三个部分
+可以有一个十进制开头的数
+12.3e10
+小数点前后都可以省略
+.3
+3.
+0.
+.0
+
+parseInt("100", 2)
+// 可以杜绝parseInt , 可以用0o 0x 0b
+
+
+
+/^([0]|[1-9][0-9]*)(\.)\d$/
+
+([0]|[1-9][0-9]*)(\.)*(\d)*
+
+/^(-)?([0]|[1-9][0-9]*)?(\.)?(\d)*([e][-]?[1][0]*)?$/
+
+1.0
+1.
+.0
+12.6e10
+12.6e-10
+12
+-12
+
+
+String -- Encoding 
+*unicode编码 - UTF
+utf8    2个字节    (超出ASCII范围之外的字符，不需深究，只需了解，把几个bit位做成了控制位)
+utf16   4个字节(因为把0补满)  
+
+utf32
+
+存 ASCII utf-8 存什么中文西文，拉丁文 utf-16 比较阔绰 utf-32
+javascript 实际存储utf-16 不承认bmp之外的字符是一个字符 
+charCodeAt fromCharCode 性能好于 codePointAt（仅是猜测，实际js引擎很难去讲）
+
+function UTF8_Encoding(string) {
+   
+    var len = string.length;
+    if(len === 1 && len.split('')[0] === 0) {
+        console.log(string)
+    }
+     // return new Buffer();
+}
+UTF8_Encoding('0xxxxxxx')
+
+String -- Grammer
+"abc"
+'abc'
+`abc`
+
+StringLiteral ::
+    " DoubleStringCharactersopt " 
+    ' SingleStringCharactersopt '
+
+DoubleStringCharacters ::
+    DoubleStringCharacter DoubleStringCharactersopt
+SingleStringCharacters ::
+    SingleStringCharacter SingleStringCharactersopt
+
+DoubleStringCharacter ::    
+    SourceCharacter but not one of " or \ or LineTerminator （任何非双引号和\的字母）
+    <LS>
+    <PS>
+    \ EscapeSequence （转义）   "\x10" \x两位 \u四位  ' " \ b f n r t v 
+    LineContinuation （\加上换行）
+
+SingleStringCharacter ::
+    SourceCharacter but not one of ' or \ or LineTerminator 
+    <LS>
+    <PS>
+    \ EscapeSequence
+    LineContinuation
+
+    ""里面
+支持 任何 非“ 和\ 的字母
+\后面可以接转义（\u转义 \x转义 \x 2 \u 4） ' " \ b f n r t v 
+linecontin 其实就是一个反斜杠+换行
+
+       \n
+\u005c \u000a
+
+[\u0022]
+
+[\"][^"][^\]((\')(\")(\\)(\b)(\f)(\n)(\r)(\t)(\v))?[A-Za-z0-9]*(\u000a)*[\"]
+
+`I said: "${
+    s
+}" `

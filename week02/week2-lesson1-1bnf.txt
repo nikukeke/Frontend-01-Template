@@ -1,0 +1,177 @@
+一种语言，两种字符构成
+终结符
+"a"
+终结符
+"b"
+程序最高结构<Program>
+<Program>::= "a"+ | "b"
+// 只能由重复的a和重复的b组合构成
+
+BNF 可递归
+<Program>::= <Program> "a"+ | <Program> "b"
+
+定义一个整数加法: 允许连加
+// 定义不能以0开始,要么是一个.. 下面的DecimalNumber
+
+<Number> = "0" | "1" | "2" | ....... | "9"
+<Number> = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+
+// 合法的十进制整数
+<DecimalNumber> = "0" | (("1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9") <Number>* )
+
+排除01 (不合法的十进制)
+
+// 加法 十进制数 + 十进制数
+<Expression> = <DecimalNumber> "+" <DecimalNumber>
+// 连加 -- 递归
+<Expression> = <Expression> "+" <DecimalNumber>
+
+// 1也可以
+=>>
+// 加法表达式
+<AdditiveExpression> = <DecimalNumber> | <AdditiveExpression> "+" <DecimalNumber> 
+// 乘法表达式
+<MultiplicativeExpression> = <DecimalNumber> | <MultiplicativeExpression> "*" <DecimalNumber>
+
+
+视频 28分 四则运算 
+1 + 2 * 3
+根据运算符的优先级 左项是1 右项是2*3
+=>>
+<AdditiveExpression> = <MultiplicativeExpression> | <AdditiveExpression> "+" <MultiplicativeExpression> 
+
+<MultiplicativeExpression> = <DecimalNumber> | <MultiplicativeExpression> "*" <DecimalNumber>
+
+<LogicalExpression> = <AdditiveExpression> |
+    <LogicalExpression> "||" <AdditiveExpression> | 
+    <LogicalExpression> "&&" <AdditiveExpression> 
+
+--------------
+
+四则运算
+
+<Number> = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+
+<DecimalNumber> = "0" | (("1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9") <Number>* )
+
+<PrimaryExpression> = <DecimalNumber> |
+    "(" <LogicalExpression>  ")"
+
+<MultiplicativeExpression> = <PrimaryExpression> | 
+    <MultiplicativeExpression> "*" <PrimaryExpression> | 
+    <MultiplicativeExpression> "/" <PrimaryExpression>
+
+<AdditiveExpression> = <MultiplicativeExpression> | 
+     <AdditiveExpression> "+" <MultiplicativeExpression> | 
+     <AdditiveExpression> "-" <MultiplicativeExpression>
+
+<LogicalExpression> = <AdditiveExpression> |
+    <LogicalExpression> "||" <AdditiveExpression> | 
+    <LogicalExpression> "&&" <AdditiveExpression> 
+
+---------------
+
+<Number> = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+
+<DecimalNumber> = "0" | (("1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9") <Number> * )
+
+<PrimaryExpression> = <DecimalNumber> |  
+
+<AdditiveExpression> = <MultiplicativeExpression> | <AdditiveExpression> "+" <MultiplicativeExpression>
+
+
+
+<MultiplicativeExpression> = <DecimalNumber> |  
+
+
+
+
+
+<Number> = "0" | "1" | "2" | ..... | "9"
+
+<DecimalNumber> = "0" | (("1" | "2" | ..... | "9") <Number>* )
+
+<PrimaryExpression> = <DecimalNumber> |
+    "(" <LogicalExpression> ")"
+
+<MultiplicativeExpression> = <PrimaryExpression> | 
+    <MultiplicativeExpression> "*" <PrimaryExpression>| 
+    <MultiplicativeExpression> "/" <PrimaryExpression>
+
+<AdditiveExpression> = <MultiplicativeExpression> | 
+    <AdditiveExpression> "+" <MultiplicativeExpression>| 
+    <AdditiveExpression> "-" <MultiplicativeExpression>
+
+<LogicalExpression> = <AdditiveExpression> | 
+    <LogicalExpression> "||" <AdditiveExpression> | 
+    <LogicalExpression> "&&" <AdditiveExpression>
+
+----------------
+
+可以看下typescript语法的一个parser实现
+https://github.com/AssemblyScript/assemblyscript/blob/master/src/parser.ts
+
+
+// 0 型 无限制文法
+<a> <b> ::= "c" <d>
+
+// 1 型 上下文相关文法
+"```四则运算\n" <LogicalExpression> "```" = "```四则运算"
+    (<AdditiveExpression> | 
+    <LogicalExpression> "||" <AdditiveExpression> | 
+    <LogicalExpression> "&&" <AdditiveExpression>)
+    "```"
+
+// 2 型 上下文无关文法
+等号左面只能有一个非终结符
+
+// 3 型 正则文法
+只允许左递归
+如果有递归，一定出现在左面
+
+** 出来前表达式都是可以左递归的
+** 出来后 出现右结合
+
+（编译原理）
+-----------------------
+Q:能不能用 正则写上面的文法 
+
+
+// 正则写DecimalNumber
+<DecimalNumber> = /0|[1-9][0-9]*/
+
+// 第一遍用正则表达式扫描，叫作词法分析
+// 后来根据产生式建立语法树 --- 抽象语法树  // 语法分析
+
+
+javascript get  ==> javascript 为数不多的非2型
+// 1 型文法  
+{
+    get a {return 1},
+    get : 1
+}
+
+2**1**2
+// ** 2 型文法 
+// 没有 ** 右结合的这种表达式  javascript 表达式部分是3 型文法
+// 
+
+
+定义什么样的语言，它就能符合什么样的级别，到什么样的级别，就可以简单处理，困难处理
+javascript和绝大多数的计算机语言，都属于2 型文法
+会在不同的地方来一些小惊喜
+
+ 凡是上下文相关文法，在编辑器上的处理，都是让语法分析器回传一个标志给词法分析器
+
+编译原理一个边边角角的问题
+
+不会特意讲，但是工程上就是会出现
+
+有什么用，更加理解javascript，有更基础的定义 =>为了能读标准
+
+
+
+词法定义双冒号
+
+语法定义单冒号
+

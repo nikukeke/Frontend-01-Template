@@ -1,0 +1,15 @@
+// I learned JavaScript today.I learned JavaScript today.
+for(let i = 0; i <120; i++) {
+    console.log(String.fromCharCode(i));
+}
+
+
+"厉害".codePointAt(0).toString(16)
+// 5389
+"厉害".codePointAt(1).toString(16)
+// 5bb3
+
+
+var \u5389\u5bb3 = 2;
+var \u738b\u5a67\u9526 = 0;
+// 五种特殊的空格
