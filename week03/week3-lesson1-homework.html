@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>StringToNumber</title>
+</head>
+
+<body>
+    <script>
+        // parseInt parseFloat Number 123（直接量）    
+
+        // 0x1011
+        // 0b1011
+        // 0o1011
+        // 10.3e10
+        // 还要处理a  11进制到36进制之间 
+
+        // 十进制/整数/小数/正负号/科学计数
+        function convertStringToNumber(string, x) {
+            if (string == '') {
+                return 0;
+            }
+            if (arguments.length < 2) {
+                x = 10
+            }
+            var minus = 1;
+            var chars = string.split('');
+            var number = 0;
+            if (x <= 10) {
+                var i = 0;
+                if (chars[0] === '-') {
+                    var minus = -1;
+                    i++;
+                } else if (chars[0].codePointAt(0) < 48 || chars[0].codePointAt(0) > 57) {
+                    return 'NaN'
+                }
+                if (chars[1].codePointAt(0) < 48 || chars[1].codePointAt(0) > 57) {
+                    return 'NaN'
+                }
+                while (i < chars.length && chars[i] != '.') {
+                    if (chars[i].codePointAt(0) >= 48 && chars[i].codePointAt(0) <= 57) {
+                        number = number * x;
+                        number += chars[i].codePointAt(0) - '0'.codePointAt(0);
+                        i++;
+                    } else {
+                        return minus * number;
+                    }
+                }
+                if (chars[i] === '.') {
+                    i++;
+                }
+                var fraction = 1;
+                while (i < chars.length && chars[i] !== 'e' && chars[i] !== 'E') {
+                    if (chars[i].codePointAt(0) >= 48 && chars[i].codePointAt(0) <= 57) {
+                        fraction = fraction / x;
+                        number += (chars[i].codePointAt(0) - '0'.codePointAt(0)) * fraction;
+                        i++;
+                    } else {
+                        break;
+                    }
+                }
+                if (chars[i] === 'e' || chars[i] === 'E') {
+                    i++;
+                    let e = 10;
+                    var mulr = 0;
+                } else {
+                    var mulr = 1;
+                }
+                let arr = 1;
+                if (chars[i] === '-') {
+                    i++;
+                    let arr = -1;
+                }
+                while (i < chars.length) {
+                    if (chars[i].codePointAt(0) >= 48 && chars[i].codePointAt(0) <= 57) {
+                        mulr = mulr * x;
+                        mulr += chars[i].codePointAt(0) - '0'.codePointAt(0);
+                        i++;
+                    } else {
+                        break;
+                    }
+                }
+                return minus * number * mulr;
+            } else {
+
+            }
+        }
+        console.log(convertStringToNumber("-9.0a1.3e10sasas0", 10));
+
+
+        // 整数部分，小数部分
+        // 只处理整数部分
+        function convertNumberToString(number, x) {
+            var minus = 1;
+            if (number < 0) {
+                var minus = -1;
+            }
+            var integer = Math.floor(number);
+            var fraction = number - integer;
+            var string = '';
+            while (integer > 0) {
+                string = String(integer % x) + string;
+                integer = Math.floor(integer / x);
+            }
+            return string;
+        }
+        console.log(convertNumberToString(100.0021, 10));
+
+
+    </script>
+</body>
+</html>

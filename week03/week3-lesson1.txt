@@ -1,0 +1,385 @@
+浮点数计算
+天蓝色符号位 橙色指数位 白色基本位
+
+------------------------
+
+function check(zero) {
+    if(1/zero === Infinity) {
+        return 1;
+    }
+    if(1/zero === -Infinity) {
+        return -1;
+    }
+}   
+check(0);
+
+// 错误版
+function sign(number){
+    return number / Math.abs(number);
+}
+sign(1);
+
+// 有问题 NaN
+sign(0);
+
+-------------------------
+
+ // 1、
+var a = 1 , b = 1 , c = 1;
+a
+++
+b
+++
+c
+//  b、c自增，又违左结合，不能有换行
+
+a/*
+
+*/++
+b/*
+
+*/++
+c
+
+[a,b,c]
+// [1,3,3] 
+
+-------------------------
+
+function cls1(){
+
+}
+function cls2(){
+    return cls1;
+}
+new cls2;
+// 1、
+// new cls2 返回 下面cls1实例
+// ƒ cls1(){
+
+// }
+
+// 2、
+// cls2()
+// ƒ cls1(){
+
+// }
+
+// 3、
+// new cls2()
+// ƒ cls1(){
+
+// }
+
+// 4、
+// new (cls2())
+// cls1 {}
+// 变成了一个对象
+
+// 5、
+// new (new cls2())
+// cls1 {}
+// 变成了一个对象
+
+// 6、
+// new new cls2()
+// cls1 {}
+// 变成了一个对象
+
+// 到底怎么理解？有括号没括号
+
+-------------------------
+
+// 1.
+function foo() {
+    console.log(new.target)
+}
+foo();
+// undefined
+new foo();
+// ƒ foo() {
+//     console.log(new.target)
+// }
+
+// 2.
+function foo() {
+    console.log(this);
+}
+new foo();
+// 伪造new
+
+// 3.在new.target之前，没有任何办法判断function foo是被new调起的
+var fakeObject = {};
+Object.setPrototypeOf(fakeObject, foo.prototype);
+fakeObject.constructor = foo;
+foo.apply(fakeObject);
+
+// foo { constructor: ƒ }
+// constructor: ƒ foo()
+// __proto__: Object
+
+fakeObject instanceof foo 
+// true
+// 因为instanceof完全是走原型链检查的
+// 所以你这个函数里面没有办法知道是被new调用的还是在被普通的方法调
+// 早期的一个bug, 所以后期有了new.target这个机制
+
+// new.target 函数外面不能用
+// new.target 在函数里面就能知道他是被哪一个new调起来的
+
+class Parent{
+    constructor(){
+        this.a = 1;
+    }
+}
+
+class Child extends Parent{
+    constructor() {
+        super();
+        console.log(this.a)
+    }
+}
+Parent.a = 1;
+// new Child 
+// => 1
+// => Child {a: 1}
+
+-------------------------
+
+function foo1() {
+    console.log(1);
+    return false;
+}
+function foo2() {
+    console.log(2);
+}
+
+// foo1() && foo2()
+// 1 
+// false
+
+
+// foo1() || foo2()
+// 1
+// 2
+
+// 完全可以把 && 和 || 当if else 用
+
+// c++不要用三目运算代替 if else 
+// js里的三目运算就是if else 表达式版本
+
+// 简洁
+// 表达式 -- 三目运算
+// 语句 -- if else
+// 可以搭配 =>
+
+// 用箭头加上表达式 图灵完备语言
+
+-------------------------
+
+(function(){
+
+})();
+
+for(var i = 0; i < 10; i++) {
+    var button = document.createElement("button");
+    document.body.append(button);
+    button.innerHTML = i;
+
+    // (function(i) {
+    //     button.onclick = function(){
+    //     console.log(i);
+    //     }
+    // }(i))
+    void function(i) {
+        button.onclick = function(){
+        console.log(i);
+        }
+    }(i)
+    // 防止上一行没写分号。
+}
+
+//    function toString没办法去区分包装类型和原始类型
+//    typeof问题不太一致，没办法区分同一对象区分不同的class
+
+-------------------------
+
+class foo {
+    constructor() {
+        this.b = 1;
+    }
+}
+
+new foo()['b']
+// 1
+
+new (foo()['b'])
+// 并不是
+
+-------------------------
+
+
+Member
+    a.b
+    a[b]            // b可以是变量
+    foo`String`
+    super b
+    super['b']
+    mew.target
+    new Foo()
+
+New
+    new Foo()
+
+    Example:
+            new a()()
+            new new a()
+
+---------------------------------
+
+function foo{
+    constructor() {
+        console.log(new.target)
+    }
+}
+foo();
+
+new foo();
+f foo() {
+    console.log(new.target)
+}
+
+---------------------------------
+
+function foo{
+    constructor() {
+        console.log(this)
+    }
+}
+foo();
+
+// 有时候用this会出问题
+new foo();
+foo{}
+foo{}
+
+---------------------------------
+var fakeObject = {};
+object.setPrototypeOf(fakeObject, foo.prototype);
+foo{}
+
+
+---------------------------------
+new.target 在函数里面用
+判断是不是被new调起来的
+
+
+Left-Hand-Side Expressions
+
+
+---------------------------------
+Boxing Unboxing
+    Number String Symbol Boolean
+    四种类对应四个类型
+
+new Number(1)
+就会对应的把number包装成一个对象
+
+new String("hello")
+
+new String("hello").length
+
+    typeof new String("hello") => "object"
+
+"hello".length
+
+    typeof "hello" => "string"
+
+凡是前面带 new的，就按照object去转。
+
+new String("")
+false
+!""
+true
+
+---------------------------------
+
+String
+Number
+Boolean
+
+前面没有new调用，会变成普通类型
+string(1)
+
+=> "1"
+
+带new的话，就是返回一个对象
+
+
+强制装箱
+Object("")
+
+=> String("1")
+
+Symbol new不了，可以直接调用
+可以通过Object装箱
+Object(Symbol("1"))
+Symbol{Symbol("1")}
+
+Object(Symbol("1")).constructor
+f Symbol{}
+Object.getPrototypeOf(Object(Symbol("1"))) === Symbol.prototype
+// true
+Object(Symbol("1")) instanceof Symbol
+// true
+
+(function(){return this}).apply(Symbol("x"))
+// 也可以装箱
+=> Symbol{Symbol(x)}
+
+apply 和 .访问一样
+
+
+1 + {}
+"1[object object]"
+
+1 + {valueOf(){return 2}}
+3
+
+1 + {toString(){return 2}}
+3 
+
+1 + {toString(){return 4}}
+5
+
+1 + {toString(){return "4"}}
+"14"
+
+1 + {valueOf(){return 1}, toString(){return "2"}}
+2
+
+"1" + {valueOf(){return 1}, toString(){return "2"}}
+"11"
+
+Symbol.toPrimitive
+Symbol[Symbol.toPrimitive]
+"1" + {valueOf(){return 1}, toString(){return "2"}}
+
+
+"1" + {[Symbol.toPrimitive](){return 6}, valueOf(){return 1}, toString(){return "2"}}
+7 
+
+"1" + {valueOf(){return }, toString(){return "2"}}
+"1undefined"
+
+1 + {[Symbol.toPrimitive](){return {}}, valueOf(){return 1}, toString(){return "2"}}
+// TypeError: Cannot convert object to primitive value 
+
+
+"1" + {valueOf(){return {}}, toString(){return "2"}}
+"12"
+
+new Date().toJSON()
+"2020-04-26T08:55:42.531Z"
+
+

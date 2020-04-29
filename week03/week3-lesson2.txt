@@ -1,0 +1,592 @@
+class-based object-oriented 代表c++ oc java
+
+prototype
+
+interface
+
+分类、归类
+
+
+------------------------------
+
+1、简单语句
+a = 1 + 2;
+表达式语句
+从产生式角度来讲，要有分号一定有分号
+从js语法完整规定来讲还有可以不写分号的，可以自动插入分号的。
+
+空语句就是一个分号
+debugger;
+
+throw a;
+throw可以跟一个表达式
+
+continue label1;
+break label2;
+
+它看起来没什么变化，但是可以带一个标签名。
+标签名必须是一个合法的标识符，跟变量是一样的。
+
+return;可以单独的一句
+return 1 + 2;也可以跟一个表达式
+
+
+
+2、复合语句
+blockstatement在c系语言中特别的重要，当我们需要用一条语句的时候，
+都可以放一个blockstatement变成多条语句
+由一对大括号括起来，跟对象一致的，所以对象是不能出现在表达式的头的
+如果一个语句以大括号开头，那么就一定是blockstatement
+{
+    a:1
+}    
+// a会被理解成一个label，也是一个合法的
+// 不会被理解成一个正常的对象
+// blockstatement会把多条语句从语法上括起来，变得像一条语句，所以
+是形成语句的各种结构的一个关键因素，新版为const let提供作用域
+{
+    const b = 1;
+}   
+{
+    const b = 1;
+}   
+同时b在任何地方都访问不到，没有这个b
+
+正常情况下blockstatement执行结果是normal，statement list里面，一条条
+的语句，但是非正常情况下，结果中断block不继续执行
+{
+    const a = 1;
+    throw 1;
+    let b = 2;
+    b = foo();
+}
+throw1 直接断掉，后面不执行，continue return throw
+语句的整个的Completion中的type是个非常核心的，其实控制语句执行不执行，
+执行的次序，都是由type来控制的。block执行过程就是一条一条执行
+statement list的过程
+q: normal是指的ExpressionStatement 和 EmptyStatement 么
+
+
+
+3、Iteration
+
+while(灰) 白
+do 白 while(灰);
+for(黑;灰;灰) 白
+for(黑 in 灰) 白
+for(黑 of 灰) 白
+for await(of)
+
+黑 声明
+灰 表达式
+白 语句
+var
+const/let 
+in
+
+// while 里面一个表达式加一个语句，因为有block的存在，所以一个语句里面要是block就是多个语句
+while和block有一个相似的地方，如果while里面有return 或 throw，那么整个这个while语句，会跟
+它自己里面的语句这个Completion就会变成这个throw或者return。while有个特点，如果里面是continue
+或者break，while这个语句就会给它消费掉。而且while这个里面的语句会执行多次，这就是所有的循环的特点
+除了Iteration语句他里面出现的子语句都执行一次，循环执行多次
+
+while就是会消费continue和break
+
+标签机制会发生什么作用？
+// …… 除了循环没人识别target属性？
+
+do.while.至少执行一次
+（都是从c语言继承过来的家产 java c c++）
+
+
+// for(黑;灰;灰) 白 。for 黑可以放声明，var const let，
+const和let到底作用范围会多大
+for 语句会独立产生一个作用域，在block之外
+
+
+
+
+
+
+
+
+
+4、
+function Class(){
+    public:
+        this.a = 1;
+        this.b = 2;
+    private:
+        var x = 3;
+        var y = 4;
+}
+o.a 1 
+o.b 2
+
+function Class(){
+    public:this.a = 1;
+        this.b = 2;
+    private:var x = 3;
+        var y = 4;
+}
+
+------------------------------
+
+    // 如果有var不建议写在任何一个语句的子结构里，我们建议写在function内。
+    var i = 0;
+    function tick(){
+        console.log(i++);
+        setTimeout(tick, 1000);
+    };
+
+    tick();
+    // 1
+    // 2
+    // 3
+    // 4
+    // 5
+    // 6
+    // 7
+
+    var i = 0;
+    while(true) {
+        console.log(i++);
+    }
+
+    function sleep(d){
+        return new Promise(resolve => setTimeout(resolve, d));
+    }
+    void async function(){
+        var i = 0;
+        while(true){
+            console.log(i++);
+            await sleep(1000);
+        }
+        console.log()
+    }();
+
+    // 异步和generator 可以叠加
+    function sleep(d){
+        return new Promise(resolve => setTimeout(resolve, d));
+    }
+
+    async function* foo(){
+        var i = 0;
+        while(true) { 
+            yield i++;
+            await sleep(1000);
+        }
+    }
+
+    void async function(){
+        var g = foo();
+        console.log(await g.next());
+        console.log(await g.next());
+        console.log(await g.next());
+    }()
+    // 一个一个一秒一秒的出来
+
+
+    var g = foo();
+    g.next();g.next();g.next();g.next();g.next();
+
+
+
+
+    // 
+    // 1、变量声明
+    var x = 0;
+    function foo(){
+        var o = {x:1};
+        var x = 2;
+        with(o) {
+            var x = 3;
+        }
+        console.log(x);
+    }
+    foo()
+    console.log(x);
+    // 2
+    // 0
+
+    var x = 0;
+    function foo(){
+        var o = {x:1};
+        var x = 2;
+        with(o) {
+            x = 3;
+        }
+        console.log(x);
+    }
+    foo()
+    console.log(x);
+    // 2
+    // 2
+    // 1、如果有var不建议写在任何一个语句的子结构里，我们建议写在function内。
+
+    function foo(){
+        var o = {x:1};
+        x = 2;
+        if(false) {
+            var x = 1;
+        }
+        console.log(x);
+    }
+    foo()
+    console.log(x);
+
+    function foo(){
+        var o = {x:1};
+        x = 2;
+        if(false) {
+            var x = 1;
+        }
+        console.log(x);
+        return 
+        var x 
+    }
+    foo()
+    console.log(x);
+
+    // 2、如果有var，写在最前面，最起码写在第一次出现的地方
+    // 3、不要在任意block里写var
+    // 4、或者舍弃var，直接用let和const
+
+
+    // 2、函数声明
+
+    function foo(){
+        foo2();
+
+        console.log(i);
+        return ;
+        var i = 1;
+        function foo2(){
+            console.log(2);
+        }
+    }
+    foo();
+    // function也有预先执行，里的内容也可用
+    // var 只提升名字，函数整个提升，函数声明泛指四类函数声明。
+
+
+    // 3、ClassDeclaration和LexicalDeclaration
+    var cls1 = 0;
+    function foo(){
+        cls1 = 2;
+        class cls1{
+
+        }
+        class cls1{
+
+        }
+    }
+    foo()
+    // Cannot access 'cls1' before initialization
+    // 1、声明一定在使用之前
+    // Identifier 'cls1' has already been declared
+    // 2、不可覆盖
+
+    // var cls1 = 0;
+    // function foo(){ 
+    //     console.log(cls1);
+    //     let cls1; // 或const
+    // }
+    // foo()
+    // 提升，但是在标准里叫  预处理，在执行之前先过一遍函数体
+    // 预处理 (pre-process)
+
+    // 对象的三要素：唯一性，状态和行为
+    // state
+    // identifier
+    // behavior
+
+    // c++ 里
+    // 状态叫做成员变量
+    // 行为叫做成员函数
+    // 唯一表示性对象指针
+
+    // 封装 编程上面的基本要求，同一层面封装、内聚、复用、解藕。这三个是描述一种架构的概念。
+    // 描述你代码架构上面的合理性
+    // 你代码的封装性好，别人就性就不好。
+    // 复用性，力度合适，抽象又合理，总能用上
+    // 解藕 不同模块的关联性比较弱
+    // 内聚和封装比较相似
+
+
+    // 继承，面向对象的子系统
+    // 多态，跟图灵完备有点像，描述动态性的程度。代码够动态，多态性好。写同一段代码产生行为
+    //      不太一样
+
+    // classbasedobjector...  代表c++ oc java
+    // 
+
+------------------------------
+
+// 1、
+for(let i = 0; i < 10; i++) {
+    console.log(i);
+}
+// 10次结果不一样
+
+
+
+// 2、
+var i = 0;
+for(let i = 0; i < 10; i++) {
+    let i = 0;
+    console.log(i);
+}
+// 10次0
+// for本身会产生一个作用域，for循环的这个范围在block之外
+
+
+
+// 3、
+for(let i = 0; i < 10; i++) {
+    let i = 0;
+    console.log(i);
+}
+// 里面没办法使用i，for产生的作用域只属于外层，外面是for的作用域，里面是block的作用域
+let i = 0;
+{
+    let i = 1;
+    console.log(i);
+}
+console.log(i);
+// 1
+// 0
+
+
+
+// 4、var 不受块级作用域影响
+for(var i = 0; i < 10; i++) {
+    console.log(i);
+}
+
+for(i = 0; i < 10; i++) {
+    var i;
+    console.log(i);
+}
+
+function run(){
+    for(i = 0; i < 10; i++) {
+        console.log(i);
+    }
+    return ;
+    var i
+}
+run();
+
+
+
+// 5、for in 和 for of都类似
+for(let p in {a:1, b:2}){
+    console.log(p);
+}
+// a
+// b
+
+
+// 6、 
+for(let p of [1,2,3]){
+    console.log(p);
+}
+// 1
+// 2
+// 3
+// for of 有个配对的东西，generator
+
+function *g(){
+    yield 0;
+    yield 1;
+    yield 4;
+}
+for(let p of g()){
+    console.log(p);
+}
+// 0
+// 1
+// 4
+
+// 一个语法糖，它其实相当于调用了对象上的某一种方法，背后有Iterator机制，forof对应Iterator机制，
+// Generator和数组都有Iterator机制。
+
+for of => Iterator => Generator/Array 
+// 特性已经脱离c家族了
+// 小小的副作用，看起来简洁，背后很深
+
+// 可以用在object上
+// 配合Generator可以实现无穷的迭代
+
+
+// 7、for(x in x) 和 in 有语法冲突
+
+
+------------------------------
+
+    // 1、
+    try {
+        throw 
+    } catch(e) {
+
+    } finally {
+
+    }
+
+    // 一定要有{}，不是block
+
+    // [[type]]:return
+    // [[value]]:--
+    // [[target]]:label
+
+    // 除了throw语句，还有其他语句能产生throw的执行结果么？
+    // function 最有可能产生throw行为
+    // ExpressionStatement 有可能产生throw
+    // 当然 1 = a也会产生，（运行时错误）
+    // null.a
+    // 所有产生运行时错误的地方都可能产生throw
+    // throw的行为可以从函数里面蔓延到函数外面
+
+
+
+    // 作用域，从语言角度来描述（不关心底层，和运行时），
+    // 只关心有效的范围，有效的文本的范围。
+//    try {
+//     throw 2;
+//    }
+
+    try {
+        throw 2;
+    } catch(e) {
+    let e;
+    console.log(e);
+    }
+    // javascript没规定throw出来的必须是error
+    // catch的行为和for的行为不一样，catch并没有在表达式的位置产生一个新的作用域，
+    // let e 就没办法声明，var e随便写那，会声明到try外面
+
+    var e = 3;
+
+    try {
+        throw 2;
+    } catch(e) {  // let声明，catch还是有一个作用域的，只不过catch在大括号范围
+                // 里面只有一个作用域，所以跟大括号里面let声明是相冲突的。
+        console.log(e);
+    }
+    console.log(e)
+    2
+    3
+
+    // 作用域和上下文的区别？
+    // 作用域是源代码里面文本的范围，上下文是在用户的电脑上，存变量的地方
+    // 作用域 -- 变量能够作用的范围文本的区域（程序员的电脑上，文本文件的源代码里面）
+    // 上下文 -- 用户的电脑上，javascript的引擎在执行的时候我所需要的一个对象
+    //           （在每一个用户的电脑上，javascript的一块内存）
+    
+    // scope指的是什么，用户内存里的scope对象。
+    // 新版本就换成了LexicalEnvironment
+
+
+
+    // 函数声明
+    function foo(){
+        
+    }
+
+    // 函数表达式，有名字没名字，不能出现在一个语句的开头
+    var o = function foo() {
+
+    }
+
+
+    // class
+    class foo {
+
+    }
+    var o = class foo{
+
+    }
+
+    // 匿名
+    void class{
+
+    }() //没什么价值
+
+    // 跟functin比较像的Generator
+    function* foo(){
+        yield 1;
+        yield 2;
+
+        var i = 3;
+        while(true) {
+            yield i++;
+        }
+    }
+
+    var o = function* foo(){
+        
+    }
+    // 一种特殊的function，可以用yiele
+    // Generator function是可以返回多个值的函数
+    // 所以你调一次，就产生一个函数
+    var gen = foo();
+    gen.next();
+    // {value:1, done:false}
+    gen.next();
+    // {value:2, done:false} 
+    gen.next();
+    // {value:3, done:false}
+
+//    跟async有什么关系
+
+// 早年框架co 用Generator 模拟async
+// Generator跟异步编程没有半毛钱关系，但是可以模拟
+// 一个函数分步返回多个值
+// function* 继承了所有function的特点
+
+// 结构化编程
+// 
+    
+
+
+// ----------
+// 异步 async？
+
+
+
+
+
+
+function sleep(){
+    return new Promise(reslove => setTimeout(() => {
+        
+    }, 1000);)
+}
+void async function(){
+    var i = 0;
+    while(true) { 
+    console.log(i++);
+    await sleep(1000);
+    }
+}();
+
+------------------------------
+
+
+Object API/Grammar
+
+{} . [] Object.definePrototype
+
+Object.create / Object.setPrototypeOf / Object.getPrototypeOf
+
+new / class / extends
+
+new / function / prototype
+
+
+
+
+
+Function Object
+
