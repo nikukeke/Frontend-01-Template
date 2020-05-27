@@ -1,0 +1,49 @@
+const http = require("http");
+
+const server = http.createServer((req, res) => {
+    console.log("request received");
+    // console.log(req);
+    console.log(req.headers);
+    res.setHeader('Content-Type', 'text/html');
+    res.setHeader('X-Foo', 'bar');
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end(
+`<html maaa=a >
+<head>
+    <style>
+    #container {
+        width: 500px;
+        height: 300px;
+        display:flex;
+        background-color:rgb(255,255,255);
+    }
+#container #myid{
+    width:200px; 
+    background-color:rgb(255,0,0);
+}
+#container .cl{
+    flex:1;
+    background-color:rgb(0,255,0);
+}
+    </style>
+</head>
+<body>
+    <div id="container"> 
+        <div id="myid"></div>
+        <div class="cl"></div> 
+    </div>
+</body>
+</html>`);
+});
+
+server.listen(8088);
+
+
+// http client
+// var xhr = new XMLHttpRequest;
+// xhr.open("get","http://127.0.0.1:8088", true);
+// xhr.send(null);
+// xhr.responseText 
+// xhr.HEADERS_RECEIVED
+
+// xhr.addEventListener
