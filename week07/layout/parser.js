@@ -49,7 +49,7 @@
 // css
 const css = require('css');
 const EOF = Symbol("EOF");
-const layout = require("./layout.js");
+const layout = require("./layout2.js");
 // EOF: end of file 
 // 编辑器可能保持一个等待字符串补全的状态，用来标识文件结尾，用来处理带结束的场景。
 // 比如说用来处理字符串，也可以需要结束标志。
