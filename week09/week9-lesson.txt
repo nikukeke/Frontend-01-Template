@@ -1,42 +1,3 @@
-重学html
-
-HTML的定义：XML与SGML
-    html: 80年代由Tim Berners-Lee发明(他也创立了w3c,发明了http),参考sgml
-          受sgml启发编写了html,html相当于在一个明确的dtd之下定义的一门语言，
-          理论上是sgml的一个子集，但是并不能用sgml引擎去解析
-    sgml: ibm出现的一种标记语言(标签可以不封闭，可以自定义实体),出现好像比计算机早一些，
-          主要用于图书管理和文档描述
-          --- 更倾向于学术阶段
-
-    2000年之后，xml出现了。用xml namespace代替了dtd
-
-语言是如何定义的，两个视角
-    sgml --dtd 以实体的方式定义，以&符
-        link
-    xml  --namespace
-        link
-
-实体
-<!ENTITY quot    "&#34;"> <!--  quotation mark, U+0022 ISOnum -->
-<!ENTITY amp     "&#38;#38;"> <!--  ampersand, U+0026 ISOnum -->
-<!ENTITY lt      "&#38;#60;"> <!--  less-than sign, U+003C ISOnum -->
-<!ENTITY gt      "&#62;"> <!--  greater-than sign, U+003E ISOnum -->
-
-    早年 xml和html是分开的
-
-
-Q:whitespace怎么使用多个
-<pre></pre> 
-<div style="white-space:pre-wrap;"> </div>
-
-Q:dtd是有哪些标签可以用浏览器使用的协议么？
-dtd完整定义了整个html语言
-
-pre可以阻止回车合并，可阻止空格合并
-
-
-语义
-
 html 语法
 合法元素(6类)
     Element:                    <tagname>...</tagname>
@@ -79,28 +40,75 @@ Node
     DocumentFragment:文档片段
     DocumentType:文档类型
 
-导航类操作
-    parentNode
-    childNodes
-    firstChild
-    lastChild
-    nextSibling
-    previousSibling
 
-修改操作
-    appendChild
-    insertBefore
-    removeChild
-    replaceChild
-    修改操作实时
+DOM
+DOM API并不是包含浏览器所有的API
+比如 Crypto 在w3c里就是一个独立的API
 
-高级操作
-    compareDocumentPosition 是一个用于比较两个节点中关系的函数
-    contains 检查一个节点是否包含另一个节点的函数
-    isEqualNode 检查两个节点是否完全相同
-    isSameNode 检查两个节点是否是同一个节点，实际上在JavaScript中可以用"==="
-    cloneNode 复制一个节点，如果传入参数true，则会连同子元素做深拷贝
+大家也认为BOM包含所有的东西，其实包含的更少 DOM不在BOM里面
+
+Web Animation也不在DOM里面
+
+dom里面有3块东西
+    一个是dom树相关的
+    一个是事件相关的
+    还有一个是下节课要讲的Range相关的
+    还有一个Traversal不用学了，是一个垃圾API
+
+还有CSSOM也不在DOM里 
 
 
-Event
+Browser API
+    DOM 
+        DOM Tree
+        Events
+        Range
+    CSSOM 
+    BOM
+    Web Animation
+    Crypto
+
+EventTarget
+    addEventListener 有三个参数
+        options
+            once        只执行一次
+            passive     不会preventDefault,声明了这个listener不会preventDefault,所以你可以把它变成一个完全异步的,
+                        对很多地方是友好的,比如scroll,比如高频的事件,或touchMove.
+                        如果想成功的preventDefault,就需要把passive显示的传一个true.所以需要选择options模式.
+
+        listener 
+            可以传一个对象进去
+            document.body.addEventListener("click",{ handleEvent: function(){console.log('111')}}),好处一个对象
+            可以Handle多个event
+
+    useCapture 捕获还是冒泡,怎么知道点到了哪个
+        元素位置与坐标比较
+        层级从上到下 zoom
+        从外往里找,其实就是个捕获的过程.
+        找到了之后,又想让所有的父级元素收到这个事件,从里往外传递一遍.
+        点击一下,从外向内,捕获的过程
     
+
+<div id="a" style="300rpx;height:300rpx;background-color:lightblue;">
+    <div id="b" style="200rpx;height:200rpx;background-color:pink;">
+
+    </div>
+</div>
+var a = document.getElementById("a");
+var b = document.getElementById("b");
+
+a.addEventListener("click", ()=> console.log("a"), true);
+b.addEventListener("click", ()=> console.log("b"), true);
+
+a 
+b 
+
+点击一下,从外向内,捕获的过程
+   
+a.addEventListener("click", ()=> console.log("a2"), false);
+b.addEventListener("click", ()=> console.log("b2"), false);
+a 
+b 
+b2 
+a2 
+先捕获，再冒泡的一个过程
