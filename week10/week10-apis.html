@@ -1,113 +1,902 @@
-<!DOCTYPE html>
-<html lang="en">
+<script>
+    let names = Object.getOwnPropertyNames(window);
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
+    // function filterOut(names, props) {
+    //   let set = new Set();
+    //   props.forEach(o => set.add(o));
+    //   return names.filter(e => !set.has(e));
+    // }
 
-<body>
+    // Intl
+    {
+        let js = new Set();
+        let objects = [
+            'Intl',
+        ];
+        objects.forEach(o => js.add(o));
+        names = names.filter(e => !js.has(e));
+    }
 
-    <script>
-        let names = Object.getOwnPropertyNames(window);
-
-        function filterOut(names, props) {
-            let set = new Set();
-            props.forEach(o => set.add(o));
-            return names.filter(e => !set.has(e));
+    names = names.filter(e => {
+        try {
+            return !(window[e].prototype instanceof Node);
+        } catch (err) {
+            return true;
         }
+    }).filter(e => e !== 'Node');
 
-        // ECMA 262
-        {
-            let js = new Set();
-            let objects = ["globalThis", "console", "BigInt", "BigInt64Array", "BigUint64Array", "Infinity", "NaN", "undefined", "eval", "isFinite", "isNaN", "parseFloat", "parseInt", "decodeURI", "decodeURIComponent", "encodeURI", "encodeURIComponent", "Array", "Date", "RegExp", "Promise", "Proxy", "Map", "WeakMap", "Set", "WeakSet", "Function", "Boolean", "String", "Number", "Symbol", "Object", "Error", "EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "ArrayBuffer", "SharedArrayBuffer", "DataView", "Float32Array", "Float64Array", "Int8Array", "Int16Array", "Int32Array", "Uint8Array", "Uint16Array", "Uint32Array", "Uint8ClampedArray", "Atomics", "JSON", "Math", "Reflect", "escape", "unescape"];
-            objects.forEach(o => js.add(o));
-            names = names.filter(e => !js.has(e));
+    names = names.filter(e => !e.match(/^on/));
+    names = names.filter(e => !e.match(/^webkit/));
+    names = names.filter(e => !e.match(/^WebKit/));
 
-        }
+    // webgl: https://www.khronos.org/registry/webgl/specs/latest/2.0/#3.6
+    {
+        let webGl = new Set();
+        let objects = [
+            'WebGL2RenderingContext', 'WebGLActiveInfo', 'WebGLBuffer', 'WebGLContextEvent', 'WebGLFramebuffer',
+            'WebGLProgram', 'WebGLQuery', 'WebGLRenderbuffer', 'WebGLRenderingContext', 'WebGLSampler', 'WebGLShader',
+            'WebGLShaderPrecisionFormat', 'WebGLSync', 'WebGLTexture', 'WebGLTransformFeedback', 'WebGLUniformLocation',
+            'WebGLVertexArrayObject', 'WebKitCSSMatrix'
+        ];
+        objects.forEach(o => webGl.add(o));
+        names = names.filter(e => !webGl.has(e));
+    }
 
+    // webaudio: https://www.w3.org/TR/webaudio/
+    {
+        let webAudio = new Set();
+        let objects = ['BaseAudioContext', 'AudioContext', 'OfflineAudioContext', 'AudioBuffer', 'AudioNode', 'AudioParam',
+            'AudioScheduledSourceNode', 'AnalyserNode', 'AudioBufferSourceNode', 'AudioDestinationNode', 'AudioListener',
+            'AudioProcessingEvent', 'BiquadFilterNode', 'ChannelMergerNode', 'ChannelSplitterNode', 'ConstantSourceNode',
+            'ConvolverNode', 'DelayNode', 'DynamicsCompressorNode', 'GainNode', 'IIRFilterNode',
+            'MediaElementAudioSourceNode', 'MediaStreamAudioDestinationNode', 'MediaStreamAudioSourceNode',
+            'MediaStreamTrackAudioSourceNode', 'OscillatorNode', 'PannerNode', 'PeriodicWave', 'ScriptProcessorNode',
+            'StereoPannerNode', 'WaveShaperNode', 'AudioWorklet',
+            'OfflineAudioCompletionEvent', 'AudioWorkletGlobalScope', 'AudioWorkletNode', 'AudioParamMap'
+        ];
+        objects.forEach(o => webAudio.add(o));
+        names = names.filter(e => !webAudio.has(e));
+    }
 
+    // encoding: https://encoding.spec.whatwg.org/
+    {
+        let encoding = new Set();
+        let objects = [
+            'TextDecoderCommon', 'TextDecoder', 'TextEncoderCommon', 'TextEncoder', 'GenericTransformStream',
+            'TextDecoderStream', 'TextEncoderStream'
+        ];
+        objects.forEach(o => encoding.add(o));
+        names = names.filter(e => !encoding.has(e));
+    }
+
+    // Web Background Synchronization: 
+    // https://wicg.github.io/background-sync/spec/#sync-manager-interface
+    {
+        let WBS = new Set();
+        let objects = ['ServiceWorkerRegistration', 'SyncManager', 'SyncEvent', "PeriodicSyncManager"]
+        objects.forEach(o => WBS.add(o));
+        names = names.filter(e => !WBS.has(e));
+    }
+
+    // storage: https://html.spec.whatwg.org/multipage/webstorage.html
+    {
+        let storage = new Set();
+        let objects = ['Storage', 'WindowSessionStorage', 'WindowLocalStorage', 'StorageEvent', 'StorageEventInit']
+        objects.forEach(o => storage.add(o));
+        names = names.filter(e => !storage.has(e));
+    }
+
+    // https://www.w3.org/TR/media-source/#sourcebufferlist
+    {
+        let api = new Set();
+        let objects = ['MediaSource', 'SourceBuffer', 'SourceBufferList', 'AudioTrack', 'VideoTrack', 'TextTrack',
+            "VideoPlaybackQuality"]
+        objects.forEach(o => api.add(o));
+        names = names.filter(e => !api.has(e));
+    }
+
+    // https://www.w3.org/TR/screen-orientation/
+    {
+        let api = new Set();
+        let objects = ['Screen', 'ScreenOrientation']
+        objects.forEach(o => api.add(o));
+        names = names.filter(e => !api.has(e));
+    }
+
+    // https://w3c.github.io/webrtc-pc/
+    {
+        let api = new Set();
+        let objects = ['RTCAnswerOptions', 'RTCCertificate', 'RTCConfiguration', 'RTCDTMFSender', 'RTCDTMFToneChangeEvent',
+            'RTCDataChannel', 'RTCDataChannelEvent', 'RTCDtlsTransport', 'RTCIceCandidate', 'RTCIceCandidateInit',
+            'RTCIceCandidatePair', 'RTCIceCandidatePairStats', 'RTCIceCandidateStats', 'RTCIceCandidateType',
+            'RTCIceComponent', 'RTCIceCredentialType', 'RTCIceGathererState', 'RTCIceParameters', 'RTCIceProtocol',
+            'RTCIceRole', 'RTCIceServer', 'RTCIceTcpCandidateType', 'RTCIceTransport', 'RTCIceTransportState',
+            'RTCIdentityAssertion', 'RTCIdentityErrorEvent', 'RTCIdentityEvent', 'RTCInboundRtpStreamStats',
+            'RTCNetworkType', 'RTCOfferAnswerOptions', 'RTCOfferOptions', 'RTCOutboundRtpStreamStats', 'RTCPeerConnection',
+            'RTCPeerConnectionIceEvent', 'RTCRtpCodecParameters', 'RTCRtpContributingSource', 'RTCRtpEncodingParameters',
+            'RTCRtpReceiver', 'RTCRtpSendParameters', 'RTCRtpSender', 'RTCRtpStreamStats', 'RTCRtpSynchronizationSource',
+            'RTCRtpTransceiver', 'RTCRtpTransceiverDirection', 'RTCRtpTransceiverInit', 'RTCSctpTransport',
+            'RTCSessionDescription', 'RTCSessionDescriptionCallback', 'RTCStats', 'RTCStatsIceCandidatePairState',
+            'RTCStatsReport', 'RTCStatsType', 'RTCTrackEvent', 'RTCTrackEventInit', 'RTCPeerConnectionIceErrorEvent',
+            'RTCErrorEvent', 'RTCError'
+        ]
+        objects.forEach(o => api.add(o));
+        names = names.filter(e => !api.has(e));
+    }
+
+    // https://www.w3.org/TR/mediacapture-streams/
+    // https://w3c.github.io/mediacapture-main/
+    // https://w3c.github.io/media-capabilities
+    {
+        let api = new Set();
+        let objects = [
+            'MediaCapabilitiesInfo', 'MediaConfiguration', 'MediaDecodingConfiguration', 'MediaDeviceInfo', 'MediaDevices',
+            'MediaElementAudioSourceNode', 'MediaEncodingConfiguration', 'MediaError', 'MediaImage', 'MediaKeyMessageEvent',
+            'MediaKeySession', 'MediaKeyStatusMap', 'MediaKeySystemAccess', 'MediaKeySystemConfiguration', 'MediaKeys',
+            'MediaList', 'MediaMetadata', 'MediaPositionState', 'MediaQueryList', 'MediaQueryListEvent',
+            'MediaQueryListListener', 'MediaRecorder', 'MediaRecorderErrorEvent', 'MediaSession',
+            'MediaSessionActionDetails', 'MediaSource', 'MediaStream', 'MediaStreamAudioDestinationNode',
+            'MediaStreamAudioSourceNode', 'MediaStreamAudioSourceOptions', 'MediaStreamConstraints', 'MediaStreamEvent',
+            'MediaStreamTrack', 'MediaStreamTrackAudioSourceNode', 'MediaStreamTrackAudioSourceOptions',
+            'MediaStreamTrackEvent', 'MediaTrackConstraints', 'MediaTrackSettings', 'MediaTrackSupportedConstraints',
+            'NavigationPreloadManager', 'NavigatorConcurrentHardware', 'NavigatorLanguage', 'NavigatorOnLine',
+            'NavigatorStorage',
+            'InputDeviceInfo', 'OverconstrainedError',
+            'WorkerNavigator', 'MediaCapabilities'
+        ]
+        objects.forEach(o => api.add(o));
+        names = names.filter(e => !api.has(e));
+    }
+
+    // https://html.spec.whatwg.org/multipage/system-state.html
+    {
+        let api = new Set();
+        let objects = [
+            'NavigatorID', 'Navigator', 'NavigatorLanguage', 'NavigatorCookies', 'NavigatorPlugins'
+        ]
+        objects.forEach(o => api.add(o));
+        names = names.filter(e => !api.has(e));
+    }
+
+    // https://www.w3.org/TR/image-capture/
+    {
+        let api = new Set();
+        let objects = [
+            'PhotoCapabilities', 'MediaSettingsRange', 'ImageCapture'
+        ]
+        objects.forEach(o => api.add(o));
+        names = names.filter(e => !api.has(e));
+    }
+
+    // https://html.spec.whatwg.org/multipage/canvas.html
+    {
+        let api = new Set();
+        let objects = [
+            'HTMLCanvasElement', 'CanvasRenderingContext2D', 'CanvasState', 'CanvasTransform', 'CanvasCompositing',
+            'CanvasImageSmoothing', 'CanvasFillStrokeStyles', 'CanvasShadowStyles', 'CanvasShadowStyles', 'CanvasFilters',
+            'CanvasRect', 'CanvasDrawPath', 'CanvasDrawPath', 'CanvasUserInterface', 'CanvasText', 'CanvasDrawImage',
+            'CanvasImageData', 'CanvasPathDrawingStyles', 'CanvasTextDrawingStyles', 'CanvasPath', 'CanvasGradient',
+            'CanvasPattern', 'TextMetrics', 'ImageData', 'Path2D', 'ImageBitmapRenderingContext', 'OffscreenCanvas',
+            'OffscreenCanvasRenderingContext2D'
+        ]
+        objects.forEach(o => api.add(o));
+        names = names.filter(e => !api.has(e));
+    }
+
+    // https://wicg.github.io/netinfo/
+    {
+        let api = new Set();
+        let objects = [
+            'NetworkInformation', 'NavigatorNetworkInformation'
+        ]
+        objects.forEach(o => api.add(o));
+        names = names.filter(e => !api.has(e));
+    }
+
+    // https://www.w3.org/TR/IndexedDB/
+    {
+        let api = new Set();
+        let objects = [
+            'indexedDB', 'IDBRequest', 'IDBOpenDBRequest', 'IDBVersionChangeEvent', 'WindowOrWorkerGlobalScope',
+            'IDBFactory', 'IDBDatabase', 'IDBObjectStore', 'IDBIndex', 'IDBKeyRange', 'IDBCursor', 'IDBCursorWithValue',
+            'IDBTransaction'
+        ]
+        objects.forEach(o => api.add(o));
+        names = names.filter(e => !api.has(e));
+    }
+
+    // https://www.w3.org/TR/SVG11/types.html
+    // https://www.w3.org/TR/SVG/coords.html
+    {
+        let api = new Set();
+        let objects = [
+            'SVGElement', 'SVGAnimatedBoolean', 'SVGAnimatedString', 'SVGStringList', 'SVGAnimatedEnumeration',
+            'SVGAnimatedInteger', 'SVGNumber', 'SVGAnimatedNumber', 'SVGNumberList', 'SVGAnimatedNumberList', 'SVGLength',
+            'SVGAnimatedLength', 'SVGLengthList', 'SVGAnimatedLengthList', 'SVGAngle', 'SVGAnimatedAngle', 'SVGColor',
+            'SVGICCColor', 'SVGRect', 'SVGAnimatedRect', 'SVGUnitTypes', 'SVGStylable', 'SVGLocatable', 'SVGTransformable',
+            'SVGTests', 'SVGLangSpace', 'SVGExternalResourcesRequired', 'SVGFitToViewBox', 'SVGZoomAndPan', 'SVGViewSpec',
+            'SVGURIReference', 'SVGCSSRule', 'SVGRenderingIntent',
+            'SVGTransformList', 'SVGTransform', 'SVGPreserveAspectRatio', 'SVGPointList', 'SVGPoint', 'SVGMatrix',
+            'SVGAnimatedTransformList', 'SVGAnimatedPreserveAspectRatio',
+        ]
+        objects.forEach(o => api.add(o));
+        names = names.filter(e => !api.has(e));
+    }
+
+    // https://www.w3.org/TR/cssom-1/
+    // https://www.w3.org/TR/css-typed-om-1/
+    // https://drafts.csswg.org/css-conditional-3/
+    // https://www.w3.org/TR/css-animations-1/
+    // https://www.w3.org/TR/cssom-view-1/
+    // https://drafts.csswg.org/css-transitions/#Events-TransitionEvent
+    // https://drafts.csswg.org/resize-observer/#resize-observer-entry-interface
+    // https://drafts.csswg.org/web-animations-1/#the-keyframeeffect-interface
+    // https://drafts.csswg.org/css-font-loading/#dom-fontfacesetloadevent-fontfacesetloadevent
+    // https://drafts.csswg.org/web-animations-1/#the-animationeffect-interface
+    // https://drafts.css-houdini.org/worklets/#worklet
+    {
+        let cssom = new Set();
+        let objects = [
+            'CSS', 'CSSFontFaceRule', 'CSSStyleSheet', 'CSSStyleDeclaration', 'CSSRuleList', 'CSSRule', 'CSSStyleRule',
+            'CSSImportRule', 'CSSGroupingRule', 'CSSMediaRule', 'CSSPageRule', 'CSSMarginRule', 'CSSNamespaceRule',
+            'CSSStyleValue', 'StylePropertyMapReadOnly', 'StylePropertyMap', 'CSSUnparsedValue',
+            'CSSVariableReferenceValue', 'CSSKeywordValue', 'CSSNumericValue', 'CSSUnitValue', 'CSSMathValue', 'CSSMathSum',
+            'CSSMathProduct', 'CSSMathNegate', 'CSSMathInvert', 'CSSMathMin', 'CSSMathMax', 'CSSNumericArray',
+            'CSSTransformValue', 'CSSTransformComponent', 'CSSTranslate', 'CSSRotate', 'CSSScale', 'CSSSkew', 'CSSSkewX',
+            'CSSSkewY', 'CSSPerspective', 'CSSMatrixComponent', 'CSSPositionValue', 'CSSImageValue',
+            'CSSConditionRule', 'CSSMediaRule', 'CSSSupportsRule',
+            'AnimationEvent', 'CSSKeyframeRule', 'CSSKeyframesRule',
+            'screen', 'innerWidth', 'innerHeight', 'scrollX', 'pageXOffset', 'scrollY', 'pageYOffset', 'visualViewport',
+            'screenX', 'screenY', 'outerWidth', 'outerHeight', 'devicePixelRatio', 'clientInformation', 'event',
+            'offscreenBuffering', 'screenLeft', 'screenTop', "StyleSheetList", "StyleSheet", "MouseEvent", "styleMedia",
+            "TransitionEvent", "ResizeObserverEntry", "ResizeObserver", "KeyframeEffect", "FontFaceSetLoadEvent", "FontFace",
+            "AnimationEffect", "Animation", "Worklet"
+        ]
+        objects.forEach(o => cssom.add(o));
+        names = names.filter(e => !cssom.has(e));
+    }
+
+    // https://dom.spec.whatwg.org/
+    {
+        let dom = new Set();
+        let objects = [
+            'Event', 'Window', 'CustomEvent', 'EventTarget', 'AbortController', 'AbortSingal', 'NodeList', 'HTMLCollection',
+            'MutationObserver', 'MutationRecord', 'Node', 'Document', 'DOMImplementation', 'DomcumentType',
+            'DocumentFragment', 'ShadowRoot', 'Element', 'NamedNodeMap', 'Attr', 'CharacterData', 'Text', 'CDATASection',
+            'ProcessingInstruction', 'Comment', 'AbstractRange', 'StaticRange', 'Range', 'NodeIterator', 'TreeWalker',
+            'NodeFilter', 'DOMTokenList', 'XPathResult', 'XPathExpression', 'XPathEvaluator', "Selection", "InputEvent",
+            "AbortSignal", "BeforeInstallPromptEvent", "MutationEvent"
+
+        ]
+        objects.forEach(o => dom.add(o));
+        names = names.filter(e => !dom.has(e));
+    }
+
+    // https://html.spec.whatwg.org/
+    {
+        let html = new Set();
+        let objects = [
+            'HTMLAllCollection', 'HTMLOptionsCollection', 'HTMLFormControlsCollection', 'DOMStringMap', 'DOMStringList',
+            'DOMRectReadOnly', 'DOMRectList', 'DOMRect', 'DOMQuad', 'DOMPointReadOnly', 'DOMPoint', 'DOMParser',
+            'DOMMatrixReadOnly', 'DOMMatrix', 'DOMException', 'TrackEvent', 'SubmitEvent', 'FormDataEvent',
+            'ImageBitmapRenderingContext', 'OffscreenCanvas', 'CustomElementRegistry', 'ElementInternals', 'DataTransfer',
+            'DataTransferItemList', 'DataTransferItem', 'DragEvent', 'History', 'Location', 'PopStateEvent',
+            'HashChangeEvent', 'PageTransitionEvent', 'BeforeUnloadEvent', 'ErrorEvent', 'PromiseRejectionEvent',
+            'MessageEvent', 'EventSource', 'WebSocket', 'CloseEvent', 'Worker', 'WorkerNavigator', 'WorkerLocation',
+            'Storage', 'sessionStorage', 'localStorage',
+            'ApplicationCache', 'AudioTrack', 'AudioTrackList', 'BarProp', 'BeforeUnloadEvent', 'BroadcastChannel',
+            'CanvasGradient', 'CanvasPattern', 'CanvasRenderingContext2D', 'CloseEvent', 'CustomElementRegistry',
+            'DOMParser', 'DOMStringList', 'DOMStringMap', 'DataTransfer', 'DataTransferItem', 'DataTransferItemList',
+            'DedicatedWorkerGlobalScope', 'Document', 'DragEvent', 'ElementInternals', 'ErrorEvent', 'EventSource',
+            'External', 'FormDataEvent', 'HTMLAllCollection', 'HTMLAnchorElement', 'HTMLAreaElement', 'HTMLAudioElement',
+            'HTMLBRElement', 'HTMLBaseElement', 'HTMLBodyElement', 'HTMLButtonElement', 'HTMLCanvasElement',
+            'HTMLDListElement', 'HTMLDataElement', 'HTMLDataListElement', 'HTMLDetailsElement', 'HTMLDialogElement',
+            'HTMLDirectoryElement', 'HTMLDivElement', 'HTMLElement', 'HTMLEmbedElement', 'HTMLFieldSetElement',
+            'HTMLFontElement', 'HTMLFormControlsCollection', 'HTMLFormElement', 'HTMLFrameElement', 'HTMLFrameSetElement',
+            'HTMLHRElement', 'HTMLHeadElement', 'HTMLHeadingElement', 'HTMLHtmlElement', 'HTMLIFrameElement',
+            'HTMLImageElement', 'HTMLInputElement', 'HTMLLIElement', 'HTMLLabelElement', 'HTMLLegendElement',
+            'HTMLLinkElement', 'HTMLMapElement', 'HTMLMarqueeElement', 'HTMLMediaElement', 'HTMLMenuElement',
+            'HTMLMetaElement', 'HTMLMeterElement', 'HTMLModElement', 'HTMLOListElement', 'HTMLObjectElement',
+            'HTMLOptGroupElement', 'HTMLOptionElement', 'HTMLOptionsCollection', 'HTMLOutputElement',
+            'HTMLParagraphElement', 'HTMLParamElement', 'HTMLPictureElement', 'HTMLPreElement', 'HTMLProgressElement',
+            'HTMLQuoteElement', 'HTMLScriptElement', 'HTMLSelectElement', 'HTMLSlotElement', 'HTMLSourceElement',
+            'HTMLSpanElement', 'HTMLStyleElement', 'HTMLTableCaptionElement', 'HTMLTableCellElement', 'HTMLTableColElement',
+            'HTMLTableElement', 'HTMLTableRowElement', 'HTMLTableSectionElement', 'HTMLTemplateElement',
+            'HTMLTextAreaElement', 'HTMLTimeElement', 'HTMLTitleElement', 'HTMLTrackElement', 'HTMLUListElement',
+            'HTMLUnknownElement', 'HTMLVideoElement', 'HashChangeEvent', 'History', 'ImageBitmap',
+            'ImageBitmapRenderingContext', 'ImageData', 'Location', 'MediaError', 'MessageChannel', 'MessageEvent',
+            'MessagePort', 'MimeType', 'MimeTypeArray', 'Navigator', 'OffscreenCanvas', 'OffscreenCanvasRenderingContext2D',
+            'PageTransitionEvent', 'Path2D', 'Plugin', 'PluginArray', 'PopStateEvent', 'PromiseRejectionEvent',
+            'RadioNodeList', 'SharedWorker', 'SharedWorkerGlobalScope', 'Storage', 'StorageEvent', 'SubmitEvent',
+            'TextMetrics', 'TextTrack', 'TextTrackCue', 'TextTrackCueList', 'TextTrackList', 'TimeRanges', 'TrackEvent',
+            'ValidityState', 'VideoTrack', 'VideoTrackList', 'WebSocket', 'Window', 'Worker', 'WorkerGlobalScope',
+            'WorkerLocation', 'WorkerNavigator'
+
+        ]
+        objects.forEach(o => html.add(o));
+        names = names.filter(e => !html.has(e));
+    }
+
+    // https://fetch.spec.whatwg.org/
+    {
+        let fetch = new Set();
+        let objects = [
+            'Headers', 'Body', 'Request', 'Response', 'fetch'
+        ]
+        objects.forEach(o => fetch.add(o));
+        names = names.filter(e => !fetch.has(e));
+    }
+
+    // https://storage.spec.whatwg.org/
+    {
+        let api = new Set();
+        let objects = [
+            'StorageManager'
+        ]
+        objects.forEach(o => api.add(o));
+        names = names.filter(e => !api.has(e));
+    }
+
+    // https://url.spec.whatwg.org/
+    {
+        let url = new Set();
+        let objects = [
+            'URL', 'URLSearchParams',
+        ]
+        objects.forEach(o => url.add(o));
+        names = names.filter(e => !url.has(e));
+    }
+
+    // https://streams.spec.whatwg.org/
+    {
+        let streams = new Set();
+        let objects = [
+            'ReadableStream', 'ReadableStreamDefaultReader', 'ReadableStreamBYOBReader', 'ReadableStreamDefaultController',
+            'ReadableByteStreamController', 'ReadableStreamBYOBRequest', 'WritableStream', 'WritableStreamDefaultWriter',
+            'WritableStreamDefaultController', 'TransformStream', 'TransformStreamDefaultController',
+            'ByteLengthQueuingStrategy', 'CountQueuingStrategy'
+        ]
+        objects.forEach(o => streams.add(o));
+        names = names.filter(e => !streams.has(e));
+    }
+
+    // https://notifications.spec.whatwg.org/
+    {
+        let notifications = new Set();
+        let objects = [
+            'Notification', 'NotificationEvent'
+        ]
+        objects.forEach(o => notifications.add(o));
+        names = names.filter(e => !notifications.has(e));
+    }
+
+    // https://xhr.spec.whatwg.org/
+    {
+        let xhr = new Set();
+        let objects = [
+            'XMLHttpRequestUpload', 'XMLHttpRequestEventTarget', 'XMLHttpRequest', 'FormData', 'ProgressEvent'
+        ]
+        objects.forEach(o => xhr.add(o));
+        names = names.filter(e => !xhr.has(e));
+    }
+
+    // ECMA 262
+    {
+        let js = new Set();
+        let objects = ['BigInt', 'BigInt64Array', 'BigUint64Array', 'Infinity', 'NaN', 'undefined', 'eval', 'isFinite',
+            'isNaN', 'parseFloat', 'parseInt', 'decodeURI', 'decodeURIComponent', 'encodeURI', 'encodeURIComponent',
+            'Array', 'Date', 'RegExp', 'Promise', 'Proxy', 'Map', 'WeakMap', 'Set', 'WeakSet', 'Function', 'Boolean',
+            'String', 'Number', 'Symbol', 'Object', 'Error', 'EvalError', 'RangeError', 'ReferenceError', 'SyntaxError',
+            'TypeError', 'URIError', 'ArrayBuffer', 'SharedArrayBuffer', 'DataView', 'Float32Array', 'Float64Array',
+            'Int8Array', 'Int16Array', 'Int32Array', 'Uint8Array', 'Uint16Array', 'Uint32Array', 'Uint8ClampedArray',
+            'Atomics', 'JSON', 'Math', 'Reflect', 'escape', 'unescape', 'globalThis'
+        ];
+        objects.forEach(o => js.add(o));
+        names = names.filter(e => !js.has(e));
+    }
+
+    // Node
+    {
         names = names.filter(e => {
             try {
                 return !(window[e].prototype instanceof Node)
             } catch (err) {
                 return true;
             }
-        }).filter(e => e != "Node");
+        }).filter(e => e != 'Node')
+    }
+
+    //https://html.spec.whatwg.org/#window
+    {
+        let windowprops = new Set();
+        objects = ['window', 'self', 'document', 'name', 'location', 'history', 'customElements', 'locationbar', 'menubar',
+            ' personalbar', 'scrollbars', 'statusbar', 'toolbar', 'status', 'close', 'closed', 'stop', 'focus', ' blur',
+            'frames', 'length', 'top', 'opener', 'parent', 'frameElement', 'open', 'navigator', 'applicationCache', 'alert',
+            'confirm', 'prompt', 'print', 'postMessage', 'console',
+            'parent', 'frameElement', "isSecureContext", "requestAnimationFrame",
+            "personalbar", "origin", "defaultStatus", "defaultstatus", "cancelAnimationFrame", "captureEvents",
+            "releaseEvents", "requestIdleCallback", "cancelIdleCallback", "getComputedStyle", "matchMedia", "getSelection",
+            "find", "btoa", "atob", "setTimeout", "clearTimeout", "setInterval", "clearInterval", "createImageBitmap",
+            "blur", "crypto", "external",
+            "moveTo", "moveBy", "resizeTo", "resizeBy", "scroll", "scrollTo", "scrollBy"
+
+        ];
+        objects.forEach(o => windowprops.add(o));
+        names = names.filter(e => !windowprops.has(e));
+    }
+
+    // https://api.dart.dev/stable/2.8.1/dart-html/promiseToFutureAsMap.html
+    {
+        let dart = new Set();
+        objects = ['MediaEncryptedEvent'];
+        objects.forEach(o => dart.add(o));
+        names = names.filter(e => !dart.has(e));
+    }
+
+    // https://w3c.github.io/geolocation-api/#position_error_interface
+    {
+        let Geolocation = new Set();
+        objects = ['GeolocationPositionError', 'GeolocationPosition', 'GeolocationCoordinates', 'Geolocation'];
+        objects.forEach(o => Geolocation.add(o));
+        names = names.filter(e => !Geolocation.has(e));
+    }
 
 
-        names = names.filter(e => !e.match(/^on/))
+    // https://w3c.github.io/gamepad/extensions.html#gamepadhapticactuator-interface
+    // https://w3c.github.io/gamepad/#gamepadevent-interface
 
-        names = names.filter(e => !e.match(/^webkit/))
-
-
-        //https://html.spec.whatwg.org/#window
-
-        {
-            let names = Object.getOwnPropertyNames(window)
-            let js = new Set();
-            let objects = ["BigInt", "BigInt64Array", "BigUint64Array", "Infinity", "NaN", "undefined", "eval", "isFinite", "isNaN", "parseFloat", "parseInt", "decodeURI", "decodeURIComponent", "encodeURI", "encodeURIComponent", "Array", "Date", "RegExp", "Promise", "Proxy", "Map", "WeakMap", "Set", "WeakSet", "Function", "Boolean", "String", "Number", "Symbol", "Object", "Error", "EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "ArrayBuffer", "SharedArrayBuffer", "DataView", "Float32Array", "Float64Array", "Int8Array", "Int16Array", "Int32Array", "Uint8Array", "Uint16Array", "Uint32Array", "Uint8ClampedArray", "Atomics", "JSON", "Math", "Reflect", "escape", "unescape"];
-            objects.forEach(o => js.add(o));
-            names = names.filter(e => !js.has(e));
-
-            names = names.filter(e => {
-                try {
-                    return !(window[e].prototype instanceof Node)
-                } catch (err) {
-                    return true;
-                }
-            }).filter(e => e != "Node")
-
-            let windowprops = new Set();
-            objects = ["window", "self", "document", "name", "location", "history", "customElements", "locationbar", "menubar", " personalbar", "scrollbars", "statusbar", "toolbar", "status", "close", "closed", "stop", "focus", " blur", "frames", "length", "top", "opener", "parent", "frameElement", "open", "navigator", "applicationCache", "alert", "confirm", "prompt", "print", "postMessage", "console"];
-            objects.forEach(o => windowprops.add(o));
-            names = names.filter(e => !windowprops.has(e));
-        }
-
-        //https://html.spec.whatwg.org/
-
-        {
-            let interfaces = new Set();
-            objects = ["ApplicationCache", "AudioTrack", "AudioTrackList", "BarProp", "BeforeUnloadEvent", "BroadcastChannel", "CanvasGradient", "CanvasPattern", "CanvasRenderingContext2D", "CloseEvent", "CustomElementRegistry", "DOMStringList", "DOMStringMap", "DataTransfer", "DataTransferItem", "DataTransferItemList", "DedicatedWorkerGlobalScope", "Document", "DragEvent", "ErrorEvent", "EventSource", "External", "FormDataEvent", "HTMLAllCollection", "HashChangeEvent", "History", "ImageBitmap", "ImageBitmapRenderingContext", "ImageData", "Location", "MediaError", "MessageChannel", "MessageEvent", "MessagePort", "MimeType", "MimeTypeArray", "Navigator", "OffscreenCanvas", "OffscreenCanvasRenderingContext2D", "PageTransitionEvent", "Path2D", "Plugin", "PluginArray", "PopStateEvent", "PromiseRejectionEvent", "RadioNodeList", "SharedWorker", "SharedWorkerGlobalScope", "Storage", "StorageEvent", "TextMetrics", "TextTrack", "TextTrackCue", "TextTrackCueList", "TextTrackList", "TimeRanges", "TrackEvent", "ValidityState", "VideoTrack", "VideoTrackList", "WebSocket", "Window", "Worker", "WorkerGlobalScope", "WorkerLocation", "WorkerNavigator"];
-            objects.forEach(o => interfaces.add(o));
-
-            names = names.filter(e => !interfaces.has(e));
-        }
-
-        //http://www.ecma-international.org/ecma-402/5.0/index.html#Title
-
-        names = names.filter(e => e != "Intl")
-
-        //https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15
-
-        names = filterOut(names, ["WebGLVertexArrayObject", "WebGLTransformFeedback", "WebGLSync", "WebGLSampler", "WebGLQuery", "WebGL2RenderingContext", "WebGLContextEvent", "WebGLObject", "WebGLBuffer", "WebGLFramebuffer", "WebGLProgram", "WebGLRenderbuffer", "WebGLShader", "WebGLTexture", "WebGLUniformLocation", "WebGLActiveInfo", "WebGLShaderPrecisionFormat", "WebGLRenderingContext"]);
-
-        //https://www.w3.org/TR/webaudio/
-
-        names = filterOut(names, ["AudioContext", "AudioNode", "AnalyserNode", "AudioBuffer", "AudioBufferSourceNode", "AudioDestinationNode", "AudioParam", "AudioListener", "AudioWorklet", "AudioWorkletGlobalScope", "AudioWorkletNode", "AudioWorkletProcessor", "BiquadFilterNode", "ChannelMergerNode", "ChannelSplitterNode", "ConstantSourceNode", "ConvolverNode", "DelayNode", "DynamicsCompressorNode", "GainNode", "IIRFilterNode", "MediaElementAudioSourceNode", "MediaStreamAudioSourceNode", "MediaStreamTrackAudioSourceNode", "MediaStreamAudioDestinationNode", "PannerNode", "PeriodicWave", "OscillatorNode", "StereoPannerNode", "WaveShaperNode", "ScriptProcessorNode", "AudioProcessingEvent"]);
-
-        //https://encoding.spec.whatwg.org/#dom-textencoder
-
-        names = filterOut(names, ["TextDecoder", "TextEncoder", "TextDecoderStream", "TextEncoderStream"]);
-
-
-        //https://streams.spec.whatwg.org/#blqs-class
-
-        names = filterOut(names, ["ReadableStream", "ReadableStreamDefaultReader", "ReadableStreamBYOBReader", "ReadableStreamDefaultController", "ReadableByteStreamController", "ReadableStreamBYOBRequest", "WritableStream", "WritableStreamDefaultWriter", "WritableStreamDefaultController", "TransformStream", "TransformStreamDefaultController", "ByteLengthQueuingStrategy", "CountQueuingStrategy"]);
+    {
+        let Gamepad = new Set();
+        objects = ['GamepadHapticActuator', 'GamepadEvent', 'Gamepad', 'GamepadButton'];
+        objects.forEach(o => Gamepad.add(o));
+        names = names.filter(e => !Gamepad.has(e));
+    }
 
 
 
-        //https://wicg.github.io/BackgroundSync/spec/#sync-manager-interface
+    // https://www.w3.org/TR/WebCryptoAPI/#crypto-interface
+    {
+        let Crypto = new Set();
+        objects = ['Crypto', "CryptoKey", "SubtleCrypto"]
+        objects.forEach(o => Crypto.add(o));
+        names = names.filter(e => !Crypto.has(e));
+    }
 
-        names = filterOut(names, ["SyncManager"]);
+    // https://www.w3.org/TR/clipboard-apis/
+    {
+        let ClipboardItem = new Set();
+        objects = ['ClipboardItem', "ClipboardEvent", "Clipboard"]
+        objects.forEach(o => ClipboardItem.add(o));
+        names = names.filter(e => !ClipboardItem.has(e));
+    }
 
-        console.log(names)
+    // https://developer.mozilla.org/en-US/docs/Web/API/Performance
+    // https://www.w3.org/TR/performance-timeline/
+    {
 
-        console.log(names.length);
+        let Performance = new Set();
+        objects = ['PerformanceTiming', "PerformanceServerTiming", "PerformanceResourceTiming",
+            "PerformancePaintTiming", "PerformanceObserverEntryList", "PerformanceObserver",
+            "PerformanceNavigationTiming", "PerformanceNavigation", "PerformanceMeasure",
+            "PerformanceMark", "PerformanceLongTaskTiming", "PerformanceEventTiming"
+            , "PerformanceEntry", "PerformanceElementTiming", "performance", "Performance"]
+        objects.forEach(o => Performance.add(o));
+        names = names.filter(e => !Performance.has(e));
+    }
 
-    </script>
-</body>
+    // https://w3c.github.io/presentation-api/
+    {
+        let Presentation = new Set();
+        objects = ["Presentation", "PresentationAvailability", "PresentationConnection"
+            , "PresentationConnectionAvailableEvent", "PresentationConnectionCloseEvent"
+            , "PresentationConnectionList", "PresentationReceiver", "PresentationRequest"]
+        objects.forEach(o => Presentation.add(o));
+        names = names.filter(e => !Presentation.has(e));
+    }
 
-</html>
+
+    // https://immersive-web.github.io/webxr/#xrsystem-interface
+    {
+        let WebXRDevice = new Set();
+        objects = ["XRBoundedReferenceSpace", "XRFrame", "XRInputSource"
+            , "XRInputSourceArray", "XRInputSourceEvent", "XRInputSourcesChangeEvent"
+            , "XRPose", "XRReferenceSpace", "XRReferenceSpaceEvent"
+            , "XRRenderState", "XRRigidTransform", "XRSession"
+            , "XRSessionEvent", "XRSpace", "XRSystem", "XRView"
+            , "XRViewerPose", "XRViewport", "XRWebGLLayer"]
+        objects.forEach(o => WebXRDevice.add(o));
+        names = names.filter(e => !WebXRDevice.has(e));
+    }
+
+    // https://wicg.github.io/webusb/#enumeration    
+    {
+        let WebUSB = new Set();
+        objects = ["USB", "USBAlternateInterface", "USBConfiguration"
+            , "USBConnectionEvent", "USBDevice", "USBEndpoint"
+            , "USBInterface", "USBInTransferResult", "USBIsochronousInTransferPacket"
+            , "USBIsochronousInTransferResult", "USBIsochronousOutTransferPacket"
+            , "USBIsochronousOutTransferResult", "USBOutTransferResult"]
+        objects.forEach(o => WebUSB.add(o));
+        names = names.filter(e => !WebUSB.has(e));
+    }
+
+    // https://webbluetoothcg.github.io/web-bluetooth/#bluetooth
+    {
+        let Bluetooth = new Set();
+        objects = ["Bluetooth", "BluetoothCharacteristicProperties", "BluetoothDevice"
+            , "BluetoothRemoteGATTCharacteristic", "BluetoothRemoteGATTDescriptor"
+            , "BluetoothRemoteGATTServer", "BluetoothRemoteGATTService", "BluetoothUUID"]
+        objects.forEach(o => Bluetooth.add(o));
+        names = names.filter(e => !Bluetooth.has(e));
+    }
+
+
+    // https://w3c.github.io/webauthn/#iface-authenticatorassertionresponse
+
+    {
+        let AuthenticatorAssertionResponse = new Set();
+        objects = ["AuthenticatorAssertionResponse", "AuthenticatorAttestationResponse"
+            , "AuthenticatorResponse", "PublicKeyCredential"]
+        objects.forEach(o => AuthenticatorAssertionResponse.add(o));
+        names = names.filter(e => !AuthenticatorAssertionResponse.has(e));
+    }
+
+
+    // https://w3c.github.io/payment-request/#paymentmethodchangeevent-interface
+
+
+
+    {
+        let payment = new Set();
+        objects = ["PaymentMethodChangeEvent", "PaymentAddress", "PaymentRequest", "PaymentResponse"
+            , "PaymentRequestUpdateEvent"]
+        objects.forEach(o => payment.add(o));
+        names = names.filter(e => !payment.has(e));
+    }
+
+    // https://webaudio.github.io/web-midi-api/#midiaccess-interface
+    {
+        let midi = new Set();
+        objects = ["MIDIAccess", "MIDIConnectionEvent", "MIDIInput"
+            , "MIDIInputMap", "MIDIMessageEvent", "MIDIOutput"
+            , "MIDIOutputMap", "MIDIPort"]
+        objects.forEach(o => midi.add(o));
+        names = names.filter(e => !midi.has(e));
+    }
+
+    // https://www.w3.org/TR/touch-events/#touch-interface
+
+    {
+        let TouchEvents = new Set();
+        objects = ["TouchList", "TouchEvent", "Touch"]
+        objects.forEach(o => TouchEvents.add(o));
+        names = names.filter(e => !TouchEvents.has(e));
+    }
+
+
+    // https://w3c.github.io/mediacapture-fromelement/#idl-def-CanvasCaptureMediaStream
+    // Media Capture from DOM Elements
+
+    {
+        let mediacapture_fromelement = new Set();
+        objects = ["CanvasCaptureMediaStreamTrack"]
+        objects.forEach(o => mediacapture_fromelement.add(o));
+        names = names.filter(e => !mediacapture_fromelement.has(e));
+    }
+
+    // https://w3c.github.io/mediacapture-record/#blobevent-section
+
+    {
+        let BlobEvent = new Set();
+        objects = ["BlobEvent"]
+        objects.forEach(o => BlobEvent.add(o));
+        names = names.filter(e => !BlobEvent.has(e));
+    }
+
+    // https://w3c.github.io/battery/
+    {
+        let battery = new Set();
+        objects = ["BatteryManager"]
+        objects.forEach(o => battery.add(o));
+        names = names.filter(e => !battery.has(e));
+    }
+
+    // https://w3c.github.io/uievents/#interface-wheelevent
+    {
+        let WheelEvent = new Set();
+        objects = ["WheelEvent", "UIEvent", "KeyboardEvent", "FocusEvent", "CompositionEvent"]
+        objects.forEach(o => WheelEvent.add(o));
+        names = names.filter(e => !WheelEvent.has(e));
+    }
+
+    // https://wicg.github.io/keyboard-map/#keyboard-interface
+    {
+        let keyboardMap = new Set();
+        objects = ["Keyboard", "KeyboardLayoutMap"]
+        objects.forEach(o => keyboardMap.add(o));
+        names = names.filter(e => !keyboardMap.has(e));
+    }
+
+
+    // https://wicg.github.io/visual-viewport/#the-visualviewport-interface
+    {
+        let VisualViewport = new Set();
+        objects = ["VisualViewport"]
+        objects.forEach(o => VisualViewport.add(o));
+        names = names.filter(e => !VisualViewport.has(e));
+    }
+
+    // https://w3c.github.io/webvtt/
+    {
+        let VTTCue = new Set();
+        objects = ["VTTCue"]
+        objects.forEach(o => VTTCue.add(o));
+        names = names.filter(e => !VTTCue.has(e));
+    }
+
+    // https://w3c.github.io/DOM-Parsing/#the-xmlserializer-interface
+    {
+        let DOM_Parsing = new Set();
+        objects = ["XMLSerializer"]
+        objects.forEach(o => DOM_Parsing.add(o));
+        names = names.filter(e => !DOM_Parsing.has(e));
+    }
+
+
+    // https://w3c.github.io/longtasks/#sec-TaskAttributionTiming
+    {
+        let longtasks = new Set();
+        objects = ["TaskAttributionTiming"]
+        objects.forEach(o => longtasks.add(o));
+        names = names.filter(e => !longtasks.has(e));
+    }
+
+    // https://w3c.github.io/webappsec-csp/2/#firing-securitypolicyviolationevent-events
+    {
+        let webappsec_csp = new Set();
+        objects = ["SecurityPolicyViolationEvent"]
+        objects.forEach(o => webappsec_csp.add(o));
+        names = names.filter(e => !webappsec_csp.has(e));
+    }
+
+
+
+    // https://w3c.github.io/reporting/#interface-reporting-observer
+    {
+        let reporting = new Set();
+        objects = ["ReportingObserver"]
+        objects.forEach(o => reporting.add(o));
+        names = names.filter(e => !reporting.has(e));
+    }
+
+    // https://www.w3.org/TR/pointerevents2/#pointerevent-interface
+
+    {
+        let PointerEvent = new Set();
+        objects = ["PointerEvent"]
+        objects.forEach(o => PointerEvent.add(o));
+        names = names.filter(e => !PointerEvent.has(e));
+    }
+
+
+
+    // https://w3c.github.io/IntersectionObserver/#intersection-observer-entry
+    {
+        let IntersectionObserver = new Set();
+        objects = ["IntersectionObserverEntry", "IntersectionObserver"]
+        objects.forEach(o => IntersectionObserver.add(o));
+        names = names.filter(e => !IntersectionObserver.has(e));
+    }
+
+    // https://wicg.github.io/input-device-capabilities/#dom-uievent-sourcecapabilities
+
+    {
+        let InputDeviceCapabilities = new Set();
+        objects = ["InputDeviceCapabilities"]
+        objects.forEach(o => InputDeviceCapabilities.add(o));
+        names = names.filter(e => !InputDeviceCapabilities.has(e));
+    }
+
+    // https://www.w3.org/TR/requestidlecallback/
+    {
+        let requestidlecallback = new Set();
+        objects = ["IdleDeadline"]
+        objects.forEach(o => requestidlecallback.add(o));
+        names = names.filter(e => !requestidlecallback.has(e));
+    }
+
+
+
+    // https://w3c.github.io/FileAPI/#dfn-filereader
+    {
+        let FileAPI = new Set();
+        objects = ["FileReader", "FileList", "File", "Blob"]
+        objects.forEach(o => FileAPI.add(o));
+        names = names.filter(e => !FileAPI.has(e));
+    }
+
+
+
+    // https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#microtask-queuing
+    {
+        let timers_and_user_prompts = new Set();
+        objects = ["queueMicrotask"]
+        objects.forEach(o => timers_and_user_prompts.add(o));
+        names = names.filter(e => !timers_and_user_prompts.has(e));
+    }
+
+    // https://webassembly.github.io/spec/js-api/#the-webassembly-object
+    {
+        let WebAssembly = new Set();
+        objects = ["WebAssembly"]
+        objects.forEach(o => WebAssembly.add(o));
+        names = names.filter(e => !WebAssembly.has(e));
+    }
+
+
+    // https://w3c.github.io/webappsec-feature-policy/
+    {
+        let webappsec_feature_policy = new Set();
+        objects = ["FeaturePolicy"]
+        objects.forEach(o => webappsec_feature_policy.add(o));
+        names = names.filter(e => !webappsec_feature_policy.has(e));
+    }
+
+    // https://w3c.github.io/permissions/#permissions-interface
+    {
+        let Permissions = new Set();
+        objects = ["Permissions", "PermissionStatus"]
+        objects.forEach(o => Permissions.add(o));
+        names = names.filter(e => !Permissions.has(e));
+    }
+
+    // https://www.w3.org/TR/picture-in-picture/
+    {
+        let pictureInPicture = new Set();
+        objects = ["EnterPictureInPictureEvent", "PictureInPictureWindow"]
+        objects.forEach(o => pictureInPicture.add(o));
+        names = names.filter(e => !pictureInPicture.has(e));
+    }
+
+
+    // https://w3c.github.io/push-api/#pushmanager-interface
+    {
+        let push = new Set();
+        objects = ["PushManager", "PushSubscription", "PushSubscriptionOptions"]
+        objects.forEach(o => push.add(o));
+        names = names.filter(e => !push.has(e));
+    }
+
+    // https://www.w3.org/TR/remote-playback/
+    {
+        let RemotePlayback = new Set();
+        objects = ["RemotePlayback"]
+        objects.forEach(o => RemotePlayback.add(o));
+        names = names.filter(e => !RemotePlayback.has(e));
+    }
+
+    // https://wicg.github.io/speech-api/#speechsynthesiserrorevent
+    {
+        let speech = new Set();
+        objects = ["SpeechSynthesisErrorEvent", "SpeechSynthesisEvent", "SpeechSynthesisUtterance"
+            , "speechSynthesis"]
+        objects.forEach(o => speech.add(o));
+        names = names.filter(e => !speech.has(e));
+    }
+
+    // https://www.w3.org/TR/webdatabase/
+    {
+        let webdatabase = new Set();
+        objects = ["openDatabase"]
+        objects.forEach(o => webdatabase.add(o));
+        names = names.filter(e => !webdatabase.has(e));
+    }
+
+    // https://w3c.github.io/webappsec-trusted-types/dist/spec/
+    {
+        let webappsec_trusted_types = new Set();
+        objects = ["trustedTypes"]
+        objects.forEach(o => webappsec_trusted_types.add(o));
+        names = names.filter(e => !webappsec_trusted_types.has(e));
+    }
+
+    // https://w3c.github.io/ServiceWorker/#cache
+    {
+        let ServiceWorker = new Set();
+        objects = ["caches", "Cache", "CacheStorage", "ServiceWorker", "ServiceWorkerContainer"]
+        objects.forEach(o => ServiceWorker.add(o));
+        names = names.filter(e => !ServiceWorker.has(e));
+    }
+
+    // https://w3c.github.io/deviceorientation/#devicemotionevent
+    {
+        let deviceorientation = new Set();
+        objects = ["DeviceMotionEvent", "DeviceMotionEventAcceleration", "DeviceMotionEventRotationRate", "DeviceOrientationEvent"]
+        objects.forEach(o => deviceorientation.add(o));
+        names = names.filter(e => !deviceorientation.has(e));
+    }
+
+    // https://w3c.github.io/webappsec-credential-management/
+    {
+        let webappsecCredentialManagement = new Set();
+        objects = ["Credential", "CredentialsContainer", "FederatedCredential", "PasswordCredential"]
+        objects.forEach(o => webappsecCredentialManagement.add(o));
+        names = names.filter(e => !webappsecCredentialManagement.has(e));
+    }
+
+    // https://www.w3.org/TR/generic-sensor/
+
+    {
+        let genericSensor = new Set();
+        objects = ["Gyroscope", "Accelerometer", "Sensor", "SensorErrorEvent"]
+        objects.forEach(o => genericSensor.add(o));
+        names = names.filter(e => !genericSensor.has(e));
+    }
+
+    // https://w3c.github.io/accelerometer/#linearaccelerationsensor-interface
+
+    {
+        let accelerometer = new Set();
+        objects = ["LinearAccelerationSensor"]
+        objects.forEach(o => accelerometer.add(o));
+        names = names.filter(e => !accelerometer.has(e));
+    }
+
+    // https://wicg.github.io/web-locks/#api-lock
+    {
+        let webLocks = new Set();
+        objects = ["Lock", "LockManager"]
+        objects.forEach(o => webLocks.add(o));
+        names = names.filter(e => !webLocks.has(e));
+    }
+
+    // https://www.w3.org/TR/orientation-sensor/#orientationsensor-interface
+    {
+        let orientationSensor = new Set();
+        objects = ["OrientationSensor", "RelativeOrientationSensor"]
+        objects.forEach(o => orientationSensor.add(o));
+        names = names.filter(e => !orientationSensor.has(e));
+    }
+
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/DOMError
+    // {
+    //     let deleteObj = new Set();
+    //     objects = ['DOMError']
+    //     objects.forEach(o => deleteObj.add(o));
+    //     names = names.filter(e => !deleteObj.has(e));
+    // }
+
+    {
+        let aboutBrowserOrDevice = new Set();
+        objects = ["chrome", "FragmentDirective", "UserActivation", "BackgroundFetchManager", "BackgroundFetchRecord",
+            "BackgroundFetchRegistration", "PaymentInstruments", "PaymentManager",
+            "TrustedHTML", "TrustedScript", "TrustedScriptURL", "TrustedTypePolicy", "TrustedTypePolicyFactory"]
+        objects.forEach(o => aboutBrowserOrDevice.add(o));
+        names = names.filter(e => !aboutBrowserOrDevice.has(e));
+    }
+
+    {
+        let unNormal = new Set();
+        objects = ["XSLTProcessor"]
+        objects.forEach(o => unNormal.add(o));
+        names = names.filter(e => !unNormal.has(e));
+    }
+
+    {
+        let others = new Set();
+        objects = ["XRHitTestResult", "XRHitTestSource", "XRRay"
+            , "XRTransientInputHitTestResult", "XRTransientInputHitTestSource"
+            , "DecompressionStream", "CompressionStream", "TextEvent"
+            , "LayoutShift", 'LargestContentfulPaint'
+            , "ApplicationCacheErrorEvent", "AbsoluteOrientationSensor"
+            , "XRDOMOverlayState", "BarcodeDetector", 'DOMError'
+        ]
+        objects.forEach(o => others.add(o));
+        names = names.filter(e => !others.has(e));
+    }
+
+
+    console.log(names);
+    document.write(names.join('\', \''));
+</script>
