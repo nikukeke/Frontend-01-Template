@@ -1,0 +1,164 @@
+<style>
+    div {
+        width: 100px;
+        height: 100px;
+        display: inline-block;
+        margin: 30px;
+        background-color: grey;
+        border-radius: 50%;
+    }
+
+    .green.light {
+        background-color: green;
+    }
+
+    .yellow.light {
+        background-color: yellow;
+    }
+
+    .red.light {
+        background-color: red;
+    }
+</style>
+<div class="green"></div>
+<div class="yellow"></div>
+<div class="red"></div>
+<button id="next">next</button>
+<script>
+    // 一个路口的红绿灯，会按照绿灯亮10秒，黄灯亮2秒，红灯亮5秒的顺序无限循环，请编写
+    // JS代码来控制这个红绿灯
+    function green() {
+        var lights = document.getElementsByTagName('div');
+        for (var i = 0; i < 3; i++) {
+            lights[i].classList.remove("light");
+        }
+
+        document.getElementsByClassName("green")[0].classList.add('light');
+    }
+    function red() {
+        var lights = document.getElementsByTagName('div');
+        for (var i = 0; i < 3; i++) {
+            lights[i].classList.remove("light");
+        }
+        document.getElementsByClassName("red")[0].classList.add('light');
+    }
+    function yellow() {
+        var lights = document.getElementsByTagName('div');
+        for (var i = 0; i < 3; i++) {
+            lights[i].classList.remove("light");
+        }
+        document.getElementsByClassName("yellow")[0].classList.add('light');
+    }
+
+    // 可以返回多个值，相当于多return了几个值
+    // function* g(){
+    //     yield 1;
+    //     yield 2;
+    //     yield 3;
+    // }
+    // g();
+    // var i = g();
+    // i.next();
+    // // {value: 1, done: false}
+    // i.next();
+    // // {value: 2, done: false}
+    // i.next();
+    // // {value: 3, done: false}
+    // i.next();
+    // // {value: undefined, done: true}
+
+    function sleep(t) {
+        return new Promise((resolve, reject) => {
+            setTimeout(resolve, t);
+        });
+    }
+
+    function* go() {
+        while (true) {
+            green();
+            yield sleep(1000);
+            yellow();
+            yield sleep(200);
+            red();
+            yield sleep(500);
+            go();
+        }
+    }
+
+    // let i = go();
+    // let t =i.next();
+    // t
+    // {value: Promise, done: false}
+    // 要弄出来一个类似这样的  t.then(()=> let {t, done) = i.next())
+
+
+    /*
+    function co(iterator) {
+        let { value, done } = iterator.next();
+        if (done)
+            return;
+        if (value instanceof Promise) {
+            value.then(() => {
+                co(iterator);
+            })
+        }
+    }
+
+    co(go());
+
+    */
+
+    function run(iterator) {
+        let { value, done } = iterator.next();
+        if (done)
+            return;
+        if (value instanceof Promise) {
+            value.then(() => {
+                run(iterator);
+            })
+        }
+    }
+    // co
+    function co(generator) {
+        return function () {
+            return run(generator());
+        }
+    }
+
+    go = co(go);
+
+
+    // 
+    // function* g() {
+    //     yield 1;
+    //     yield 2;
+    //     yield 3;
+    // }
+
+    // for(v of g()) {
+    //     console.log(v);
+    // }
+    // 1
+    // 2
+    // 3
+
+
+    // 无限列表不可以用for of 
+    // 可以制造async generator
+
+    // async function* g() {
+    //     let i = 0 ;
+    //     while(true) {
+    //         await sleep(1000);
+    //         yield i++;
+    //     }
+    // }
+
+    // for await(let v of g()) {
+    //     console.log(v);
+    // }
+  
+    // 可以无限列表并且不会死机，会持续执行
+
+    
+</script>

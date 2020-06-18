@@ -1,0 +1,70 @@
+<style>
+    div {
+        width: 100px;
+        height: 100px;
+        display: inline-block;
+        margin: 30px;
+        background-color: grey;
+        border-radius: 50%;
+    }
+
+    .green.light {
+        background-color: green;
+    }
+
+    .yellow.light {
+        background-color: yellow;
+    }
+
+    .red.light {
+        background-color: red;
+    }
+</style>
+<div class="green"></div>
+<div class="yellow"></div>
+<div class="red"></div>
+<script>
+    // 一个路口的红绿灯，会按照绿灯亮10秒，黄灯亮2秒，红灯亮5秒的顺序无限循环，请编写
+    // JS代码来控制这个红绿灯
+    function green() {
+        var lights = document.getElementsByTagName('div');
+        for (var i = 0; i < 3; i++) {
+            lights[i].classList.remove("light");
+        }
+
+        document.getElementsByClassName("green")[0].classList.add('light');
+    }
+    function red() {
+        var lights = document.getElementsByTagName('div');
+        for (var i = 0; i < 3; i++) {
+            lights[i].classList.remove("light");
+        }
+        document.getElementsByClassName("red")[0].classList.add('light');
+    }
+    function yellow() {
+        var lights = document.getElementsByTagName('div');
+        for (var i = 0; i < 3; i++) {
+            lights[i].classList.remove("light");
+        }
+        document.getElementsByClassName("yellow")[0].classList.add('light');
+    }
+
+    // 把所有异步相关的函数本身变成promise 
+    // settimeout改写成了sleep的形式
+    function sleep(t) {
+        return new Promise((resolve, reject) => {
+            setTimeout(resolve, t);
+        });
+    }
+    function go() {
+        green()
+        sleep(1000).then(() => {
+            yellow();
+            return sleep(200);
+        }).then(() => {
+            red();
+            return sleep(500);
+        }).then(go);
+    }
+
+</script>
