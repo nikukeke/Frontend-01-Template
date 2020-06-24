@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #parent {
+            font-size: 0;
+        }
+
+        .cell {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: gray;
+            border-bottom: solid 1px white;
+            border-right: solid 1px white;
+            vertical-align: middle;
+        }
+
+        #container {
+            width: 701px;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        // 画障碍，一个起点一个终点，找路径
+        // 目前: 只能上下左右走 画一个地图编辑器 100 x 100
+        // 两个重要的问题 1.用鼠标画  2.保存起来
+        // 用什么样的结构 - 数组 一维数组/二维数组 推荐一维数组
+        // 怎么创建10000的一维数组  fill  老一代如何? push 
+        // 艰苦的年代 var map = new Array(10001).join(0).split('').map(s => Number(s));
+    </script>
+    <div id="parent">
+        <div id="container"></div>
+        <button onclick="localStorage.map = JSON.stringify(map)">save</button>
+        <button onclick="(delete localStorage.map)">delete</button>
+    </div>
+    <script>
+        var map = localStorage.map ?
+            JSON.parse(localStorage.map) : new Array(10000).fill(0);
+        let container = document.getElementById("container");
+        for (let y = 0; y < 100; y++) {
+            for (let x = 0; x < 100; x++) {
+                let cell = document.createElement("div");
+                cell.classList.add("cell");
+
+                if (map[y * 100 + x] === 1) {
+                    cell.style.backgroundColor = 'black';
+                }
+
+                cell.addEventListener("mousemove", () => {
+                    // cell.addEventListener("mouseover" , ()=> {
+                    if (mouse) {
+                        if (clear) {
+                            cell.style.backgroundColor = '';
+                            map[y * 100 + x] = 0;
+                        } else {
+                            cell.style.backgroundColor = 'black';
+                            map[y * 100 + x] = 1;
+                        }
+                    }
+                })
+
+
+                container.appendChild(cell);
+            }
+        }
+        let mouse = false;
+        let clear = false;
+
+        document.addEventListener("mousedown", e => {
+            mouse = true
+            clear = (e.which === 3);
+        })
+        document.addEventListener("mouseup", () => mouse = false)
+        document.addEventListener("contextmenu", e => e.preventDefault())
+
+        function sleep(t) {
+            return new Promise((resolve, reject) => {
+                setTimeout(resolve, t);
+            });
+        }
+
+        // 起始到终止找一个路走过去
+        // 搜索 深度优先搜索 广度优先搜索
+        // 点，三种状态 未触达(白) 已经走到了(紫) 可以从它走到别的(紫-蓝) 
+        async function findPath(map, start, end) {
+            map = map.slice();
+            let stack = [start];
+
+            async function insert([x, y]) {
+                if (map[100 * y + x] !== 0)
+                    return;
+                if (x < 0 || y < 0 || x > 100 || y > 100)
+                    return;
+                map[100 * y + x] = 2;
+                container.children[y * 100 +x].style.backgroundColor = "lightgreen";
+                await sleep(5);
+                stack.push([x,y]);
+            }
+            while (stack.length) {
+                let [x, y] = stack.pop();  // pop unshift  push shift 
+                // 想要变蓝，找上下左右
+                if (x === end[0] && y === end[1])
+                    return true;
+                insert([x - 1, y]);
+                insert([x + 1, y]);
+                insert([x, y - 1]);
+                insert([x, y + 1]);
+                // 有障碍的不能走，到边了不能走
+            }
+            return false;
+        }
+    </script>
+</body>
+
+</html>
