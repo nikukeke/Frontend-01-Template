@@ -15,6 +15,18 @@ module.exports = {
                         ]]
                     }
                 }
+            },
+            {
+                test: /\.view/,
+                use:{
+                    loader: require.resolve("./myloader.js")
+                }
+            },
+            {
+                test: /\.css/,
+                use:{
+                    loader: require.resolve("./component-css-loader.js")
+                }
             }
         ]
     },

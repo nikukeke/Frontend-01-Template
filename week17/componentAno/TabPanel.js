@@ -16,9 +16,12 @@ export class TabPanel {
         this.state = Object.create(null);
     }
 
-    setAttribute(name, value) {  // attribute 
-        // this.root.setAttribute(name, value);
+    setAttribute(name, value) {   
         this[name] = value;
+    }
+
+    getAttribute(name) {   
+        return this[name] ;
     }
 
     appendChild(child) {  // children 
@@ -29,12 +32,30 @@ export class TabPanel {
             view.style.display = 'none';
         }
         this.childViews[i].style.display = "";
+
+        // for(let view of this.titleViews) {
+        //     view.style.display = 'none';
+        // }
+        // this.titleViews[i].style.display = "";
+
+        for(let view of this.titleViews) {
+            view.classList.remove('selected');
+        }
+        this.titleViews[i].classList.add('selected');
+
+
+
+        // this.titleView.innerText = this.children[i].title;
     }
     render() {
-        return <div class="tab-panel" style="border:solid 1px lightgreen;width:300px;">
-                 <h1 style="background-color:lightgreen;width:300px;margin:0;">title</h1>
-                 <div>
-                     {this.children.map(child => <div style="width:300px;min-height:300px;">{child}</div>)}
+        this.childViews = this.children.map(child => <div style="width:300px;min-height:300px;">{child}</div>);
+        this.titleViews =  this.children.map((child,i) => <span onClick={() => this.select(i)} style="width:300px;min-height:300px;">{child.getAttribute("title") || " "}</span>);
+
+        setTimeout(() => this.select(0),16);
+        return <div class="tab-panel" style="background-color:#fff;border:solid 1px lightgreen;width:300px;">
+                 <h1 style="background-color:lightgreen;margin:5px 5px 0 5px;font-size:24px;width:300px;margin:0;">{this.titleViews}</h1>
+                 <div style="border:solid 1px lightgreen;">
+                     { this.childViews }
                  </div>
         </div>;
     }
