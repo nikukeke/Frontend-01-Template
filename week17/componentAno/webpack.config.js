@@ -23,9 +23,9 @@ module.exports = {
                 }
             },
             {
-                test: /\.css/,
+                test: /\.css$/,
                 use:{
-                    loader: require.resolve("./component-css-loader.js")
+                    loader: require.resolve("./cssloader.js")
                 }
             }
         ]

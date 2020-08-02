@@ -3,7 +3,8 @@ import { createElement, Text, Wrapper } from "./createElement";
 import { Timeline, Animation } from "./animation"
 import { ease } from "./cubicBezier"
 
-import "carousel.css"
+import css from "./carousel.css"
+
 
 export class Carousel {
     // 只有一次设置
