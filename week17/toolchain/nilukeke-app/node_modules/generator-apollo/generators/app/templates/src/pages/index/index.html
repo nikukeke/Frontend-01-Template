@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn" class="h5">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv='Content-Type' content="text/html;charset=UTF-8"/>
+    <meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <script src="//assets.geilicdn.com/v-components/flexible/0.4.0/flexible.js"></script>
+    <title>demo</title>
+    <link href="<%= htmlWebpackPlugin.files.chunks['index/index'].css %>" rel="stylesheet">
+
+</head>
+<body >
+    
+<div class="container" >
+</div>
+<script src="//assets.geilicdn.com/v-components/zepto/1.1.6/zepto.min.js"></script>
+  
+<script src="<%= htmlWebpackPlugin.files.chunks['index/index'].entry %>"></script>
+
+<script>
+    
+// spm analysis
+var _paq = _paq || [];
+_paq.push(['trackPageView']);
+_paq.push(['enableLinkTracking']);
+
+(function(){
+    var is_https = ("https:" === document.location.protocol) ? 1 : 0,
+    u = (is_https ? "https" : "http") + "://analysis.koudai.com/";
+    _paq.push(['setTrackerUrl', u +'index.php']);
+    _paq.push(['setSiteId', 1]);
+
+    var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+    g.type='text/javascript';
+    g.defer=true;
+    g.async=true;
+    g.src=is_https ? 'https://analysis.koudai.com/piwik-spm.js' : 'http://static.koudai.com/analysis/piwik-spm.js';
+    s.parentNode.insertBefore(g,s);
+})();
+
+</script>
+
+</body>
+</html>
