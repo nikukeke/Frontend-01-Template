@@ -1,8 +1,7 @@
 {
-  "name": "apollo",
+  "name": "generator-apollo",
   "version": "1.0.0",
-  "description": "",
-  "main": "./app/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,8 +9,12 @@
     "app",
     "router"
   ],
+  "keywords": [
+    "yeoman-generator"
+  ],
   "author": "",
   "license": "ISC",
+  "description": "",
   "dependencies": {
     "yeoman-generator": "^4.11.0"
   }
