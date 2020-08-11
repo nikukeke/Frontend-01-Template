@@ -1,7 +1,7 @@
 let currentToken = null;
 let currentAttribute = null;
 
-let stack = [{type: "document", children:[]}];
+let stack ;
 let currentTextNode = null;
 
 function emit(token){
@@ -82,9 +82,13 @@ function tagOpen(c){
     } else {
         emit({
             type: "text",
+            content : "<"
+        });
+        emit({
+            type: "text",
             content : c
         });
-        return ;
+        return data;
     }
 }
 
@@ -177,7 +181,7 @@ function singleQuotedAttributeValue(c) {
         
     } else {
         currentAttribute.value += c;
-        return doubleQuotedAttributeValue
+        return singleQuotedAttributeValue
     }
 }
 
@@ -296,7 +300,8 @@ function scriptDataEndTagOpen(c){
 
         emit({
             type:"text",
-            content:"c"
+            content:c
+            // ?
         });
         return scriptData;
     }
@@ -431,6 +436,7 @@ function afterAttributeName(c) {
 
 export function parseHTML(html){
     let state = data;
+    stack = [{type: "document", children:[]}];
     for(let c of html) {
         state = state(c);
         if(stack[stack.length - 1].tagName === "script" && state == data) {
